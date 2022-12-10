@@ -26,7 +26,7 @@ function SearchResult({ result = [], ...passProp }) {
             }
          }
       }
-   });
+   }, []);
 
    const handleKey = useCallback(
       (e) => {

@@ -6,7 +6,6 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import styles from './ProductItem.module.scss';
 import { useEffect, useRef } from 'react';
 import Button from '~/components/Button';
-import { data } from 'autoprefixer';
 import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
