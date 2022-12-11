@@ -71,24 +71,6 @@ function HeaderSidebar({ showNav: defaultShowNav }) {
       }
    };
 
-   const handleShowAndHide = () => {
-      if (navRef.current) {
-         if (navRef.current.style.left !== '-240px' || !navRef.current.style.left) {
-            pseudoRef.current.click();
-         } else {
-            //Scroll body
-            const curY = window.scrollY;
-            document.body.style.top = `${-curY}px`;
-            document.body.classList.add('scroll_lock');
-
-            navRef.current.style.left = 0 + 'px';
-
-            pseudoRef.current.style.display = 'block';
-            pseudoRef.current.style.opacity = 0.4;
-         }
-      }
-   };
-
    useEffect(() => {
       const temp = navRef.current;
       if (temp) temp.addEventListener('mousedown', handleMouseDownNav);
@@ -112,6 +94,24 @@ function HeaderSidebar({ showNav: defaultShowNav }) {
       window.scrollTo(0, -curY);
 
       document.body.style = '';
+   };
+
+   const handleShowAndHide = () => {
+      if (navRef.current) {
+         if (navRef.current.style.left !== '-240px' || !navRef.current.style.left) {
+            pseudoRef.current.click();
+         } else {
+            //Scroll body
+            const curY = window.scrollY;
+            document.body.style.top = `${-curY}px`;
+            document.body.classList.add('scroll_lock');
+
+            navRef.current.style.left = 0 + 'px';
+
+            pseudoRef.current.style.display = 'block';
+            pseudoRef.current.style.opacity = 0.4;
+         }
+      }
    };
 
    useEffect(() => {

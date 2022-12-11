@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames/bind';
-import styles from './Watch.module.scss';
+import styles from './Video.module.scss';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { AiOutlinePause } from 'react-icons/ai';
 import { BiSkipPrevious, BiSkipNext, BiVolumeLow, BiVolumeFull } from 'react-icons/bi';
+import { Alert } from 'bootstrap';
 
 const videoSrc = require('~/assets/videos/y2mate.com - One Wish  Vu Tử Bối Cover  Vietsub_480p.mp4');
 // const videoSrc = require('~/assets/videos/Mây - Mr.Siro.mp4');

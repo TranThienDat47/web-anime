@@ -12,7 +12,7 @@ import Button from '~/components/Button';
 const cx = classNames.bind(styles);
 
 function Header() {
-   const [showNav, setShowNav] = useState(false);
+   const [showNav, setShowNav] = useState(true);
    return (
       <>
          <header className={cx('wrapper')}>
