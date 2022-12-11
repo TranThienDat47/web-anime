@@ -5,7 +5,6 @@ import styles from './Video.module.scss';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { AiOutlinePause } from 'react-icons/ai';
 import { BiSkipPrevious, BiSkipNext, BiVolumeLow, BiVolumeFull } from 'react-icons/bi';
-import { Alert } from 'bootstrap';
 
 const videoSrc = require('~/assets/videos/y2mate.com - One Wish  Vu Tử Bối Cover  Vietsub_480p.mp4');
 // const videoSrc = require('~/assets/videos/Mây - Mr.Siro.mp4');
@@ -13,21 +12,24 @@ const videoSrc = require('~/assets/videos/y2mate.com - One Wish  Vu Tử Bối C
 const cx = classNames.bind(styles);
 
 const Watch = () => {
+   const watchRef = useRef();
    const videoRef = useRef();
    const watchControlRef = useRef();
    const modalControlRef = useRef();
 
+   const [showControl, setShowControl] = useState(true);
+
    const [play, setPlay] = useState(false);
    const cur_play_pause_Ref = useRef(false);
    const play_pause_Ref = useRef();
+
+   const canEffectRef = useRef(false);
 
    const effectPlayRef = useRef();
 
    const [volume, setVolume] = useState(2);
    const volumeCurRef = useRef({ level: 2, percent: 1 });
    const volumeRef = useRef();
-
-   const canPlayRef = useRef(false);
 
    const dragRef = useRef(false);
    const progressRefRef = useRef();
@@ -56,11 +58,8 @@ const Watch = () => {
          setPlay(true);
       }
    };
-   console.log('kkk');
 
    const handleAutoProgress = (widthProgress, widthProgressBall) => {
-      canPlayRef.current = true;
-
       curIntervalRef.current = setInterval(() => {
          const moveProgress = videoRef.current.currentTime / videoRef.current.duration;
 
@@ -96,11 +95,25 @@ const Watch = () => {
       }% - ${widthProgressBall}px))`;
    };
 
-   // const uniqueTime = setTimeout(() => {
-   //    modalControlRef.current.style.visibility = 'hidden';
-   //    watchControlRef.current.style.visibility = 'hidden';
-   //    clearTimeout(uniqueTime);
-   // }, 4000);
+   useEffect(() => {
+      if (!showControl) {
+         modalControlRef.current.style.opacity = '0';
+         watchControlRef.current.style.opacity = '0';
+      } else {
+         modalControlRef.current.style.opacity = '1';
+         watchControlRef.current.style.opacity = '1';
+      }
+
+      watchRef.current.onmouseover = () => {
+         setShowControl(true);
+      };
+
+      watchRef.current.onmouseleave = () => {
+         if (!videoRef.current.paused) {
+            setShowControl(false);
+         }
+      };
+   }, [showControl]);
 
    useEffect(() => {
       play_pause_Ref.current.onclick = handlePlayAndPaus;
@@ -114,12 +127,22 @@ const Watch = () => {
       const widthProgress = progressRefRef.current.getBoundingClientRect().width;
       const widthProgressBall = progressBallMain.current.getBoundingClientRect().width / 2;
 
-      videoRef.current.onplay = handleAutoProgress(widthProgress, widthProgressBall);
+      videoRef.current.onplay = () => {
+         handleAutoProgress(widthProgress, widthProgressBall);
+         canEffectRef.current = true;
+      };
 
-      videoRef.current.onpause = (e) => {};
+      videoRef.current.onpause = (e) => {
+         canEffectRef.current = true;
+      };
 
       videoRef.current.onended = (e) => {
+         canEffectRef.current = false;
          setPlay(false);
+      };
+
+      videoRef.current.oncanplay = (e) => {
+         canEffectRef.current = true;
       };
 
       if (play) {
@@ -137,8 +160,6 @@ const Watch = () => {
    useEffect(() => {
       const widthProgressBall = progressBallMain.current.getBoundingClientRect().width / 2;
 
-      videoRef.current.onmouseover = () => {};
-
       progressRefRef.current.onmouseover = (e) => {
          mainProgressfRef.current.style.transform = 'scaleY(1)';
          progressBall.current.style.visibility = 'visible';
@@ -147,10 +168,12 @@ const Watch = () => {
       };
 
       progressRefRef.current.onmouseleave = (e) => {
-         mainProgressfRef.current.style.transform = 'scaleY(0.5)';
-         progressBall.current.style.visibility = 'hidden';
-         progressBallMain.current.style.height = '2px';
-         progressBallMain.current.style.width = '2px';
+         if (!dragRef.current) {
+            mainProgressfRef.current.style.transform = 'scaleY(0.5)';
+            progressBall.current.style.visibility = 'hidden';
+            progressBallMain.current.style.height = '2px';
+            progressBallMain.current.style.width = '2px';
+         }
       };
 
       progressRefRef.current.onmousedown = (e) => {
@@ -177,6 +200,12 @@ const Watch = () => {
                setPlay(true);
                videoRef.current.play();
             }
+
+            mainProgressfRef.current.style.transform = 'scaleY(0.5)';
+            progressBall.current.style.visibility = 'hidden';
+            progressBallMain.current.style.height = '2px';
+            progressBallMain.current.style.width = '2px';
+
             progressCurrent.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
          -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
             progressBall.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
@@ -188,7 +217,7 @@ const Watch = () => {
 
    return (
       <div className={cx('wrapper')}>
-         <div className={cx('watch')}>
+         <div ref={watchRef} className={cx('watch')}>
             <video ref={videoRef} src={videoSrc}></video>
             <div ref={watchControlRef} className={cx('watch-controls')}>
                <div ref={progressRefRef} className={cx('progress')}>
@@ -224,8 +253,7 @@ const Watch = () => {
                </div>
             </div>
             <div ref={modalControlRef} className={cx('modal-control')}></div>
-
-            {canPlayRef.current ? (
+            {canEffectRef.current ? (
                <div ref={effectPlayRef}>
                   {!play ? (
                      <div className={cx('effect', 'effect-play')}>

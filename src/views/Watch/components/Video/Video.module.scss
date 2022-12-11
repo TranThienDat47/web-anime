@@ -14,7 +14,6 @@
    align-items: center;
    max-width: 2276px;
    margin: auto;
-   margin-top: 16px;
 }
 
 .watch {
@@ -95,28 +94,24 @@
    width: 100%;
    bottom: 0;
    background: linear-gradient(
-      rgba(255, 255, 255, 0.01),
-      rgba(0, 0, 0, 0.1),
+      rgba(255, 255, 255, 0.001),
+      rgba(0, 0, 0, 0.05),
       rgba(0, 0, 0, 0.4),
       rgba(0, 0, 0, 0.7)
    );
+   transition: opacity 0.25s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .watch-controls {
    z-index: 1;
    position: absolute;
    height: 74px;
-   // background: linear-gradient(
-   //    rgba(255, 255, 255, 0.01),
-   //    rgba(0, 0, 0, 0.2),
-   //    rgba(0, 0, 0, 0.6),
-   //    rgba(0, 0, 0, 0.9)
-   // );
    user-select: none;
    -webkit-user-drag: none;
    bottom: 0px;
    width: 100%;
    padding: 4px 1%;
+   transition: opacity 0.25s cubic-bezier(0, 0, 0.2, 1);
 
    .progress {
       display: block;
