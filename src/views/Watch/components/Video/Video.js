@@ -18,6 +18,8 @@ const Watch = () => {
    const watchControlRef = useRef();
    const modalControlRef = useRef();
 
+   const isEndedRef = useRef(false);
+
    const [showControl, setShowControl] = useState();
 
    const [play, setPlay] = useState(0);
@@ -94,7 +96,15 @@ const Watch = () => {
 
       if (moveProgress > 1) {
          moveProgress = 1;
-         cur_play_pause_Ref.current = false;
+
+         videoRef.current.currentTime = moveProgress * (videoRef.current.duration - 0.01);
+
+         progressCurrent.current.style.transform = `scaleX(${moveProgress})`;
+         progressBall.current.style.transform = `translateX(calc(${
+            moveProgress * 100
+         }% - ${widthProgressBall}px))`;
+
+         return;
       } else if (moveProgress < 0) {
          moveProgress = 0;
       }
@@ -131,6 +141,12 @@ const Watch = () => {
          } else setShowControl(2);
       };
 
+      watchRef.current.onclick = () => {
+         if (play === 1) {
+            setShowControl(1);
+         } else setShowControl(2);
+      };
+
       watchRef.current.onmouseleave = () => {
          if (play === 1 && !dragRef.current) {
             setShowControl(0);
@@ -160,14 +176,20 @@ const Watch = () => {
       videoRef.current.onplay = () => {
          setShowControl(1);
          handleAutoProgress();
+
+         isEndedRef.current = false;
       };
 
       videoRef.current.onpause = (e) => {
          setShowControl(2);
+         isEndedRef.current = false;
       };
 
       videoRef.current.onended = (e) => {
          setPlay(2);
+
+         isEndedRef.current = true;
+
          if (dragRef.current) {
             videoRef.current.autoplay = false;
          }
@@ -181,9 +203,16 @@ const Watch = () => {
          clearInterval(curIntervalRef.current);
       }
 
+      window.onkeypress = (e) => {
+         if (e.keyCode == 32) {
+            handlePlayAndPaus();
+         }
+      };
+
       return () => {
          clearInterval(curIntervalRef.current);
       };
+
       // eslint-disable-next-line
    }, [play]);
 
@@ -229,7 +258,7 @@ const Watch = () => {
          if (dragRef.current) {
             setShowControl(1);
 
-            if (cur_play_pause_Ref.current) {
+            if (cur_play_pause_Ref.current || isEndedRef.current) {
                setPlay(1);
                videoRef.current.play();
             }
