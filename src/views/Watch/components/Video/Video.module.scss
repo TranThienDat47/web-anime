@@ -48,11 +48,6 @@
    .effect-play {
       animation: effect_play 0.8s cubic-bezier(0, 0, 0.2, 1);
    }
-
-   .effect-pause {
-      animation: effect_pause 0.8s cubic-bezier(0, 0, 0.2, 1);
-   }
-
    @keyframes effect_pause {
       from {
          width: 60px;
@@ -70,6 +65,9 @@
       }
    }
 
+   .effect-pause {
+      animation: effect_pause 0.8s cubic-bezier(0, 0, 0.2, 1);
+   }
    @keyframes effect_play {
       from {
          width: 60px;

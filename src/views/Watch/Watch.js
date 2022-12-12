@@ -6,7 +6,6 @@ import Video from '~/views/Watch/components/Video/index';
 const cx = classNames.bind(styles);
 
 const Watch = () => {
-   console.log('kkk');
    return (
       <div className={cx('wrapper')}>
          <Video />
