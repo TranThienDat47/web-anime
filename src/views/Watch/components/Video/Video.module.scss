@@ -100,6 +100,35 @@
    transition: opacity 0.25s cubic-bezier(0, 0, 0.2, 1);
 }
 
+.modal-previews {
+   position: absolute;
+   background-color: transparent;
+   width: 100%;
+   height: 100%;
+   visibility: hidden;
+   background-image: url('');
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: cover;
+
+   &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.57);
+   }
+}
+
+@keyframes previewMoal {
+   from {
+      opacity: 0;
+   }
+   to {
+      opacity: 1;
+   }
+}
+
 .watch-controls {
    z-index: 1;
    position: absolute;
@@ -133,7 +162,7 @@
             border: 2px solid rgba(255, 255, 255, 0.7);
             background-color: rgba(0, 0, 0, 0.4);
             background-image: url('');
-            bottom: calc(40px + 0px);
+            bottom: calc(40px + 2px);
          }
 
          .progress-time_img {
@@ -158,7 +187,6 @@
 
       .progress-main {
          border-radius: 2px;
-
          overflow: hidden;
          height: 6px;
          background-color: rgba(255, 255, 255, 0.3);
@@ -173,11 +201,13 @@
          height: 100%;
          width: 100%;
          transform-origin: 0 0;
-         transform: scaleX(50%);
+         transform: scaleX(0);
          background-color: rgba(255, 255, 255, 0.6);
          z-index: 1;
          user-select: none;
          -webkit-user-drag: none;
+         transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1),
+            -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1);
       }
 
       .progress-current {
@@ -230,6 +260,7 @@
          font-size: 17px;
          font-weight: 600;
          line-height: 17px;
+         margin-left: 16px;
       }
 
       button {
@@ -255,25 +286,20 @@
             align-items: center;
          }
 
-         .none-volume::after {
-            content: '';
+         .none-volume-clear {
             position: absolute;
             width: 3px;
             height: 30px;
-            background-color: var(--white-color);
             top: 50%;
             left: 27px;
             transform: rotate(-46deg) translateY(-58%);
-            animation: volume 0.25s linear;
             transform-origin: 100% 0;
-         }
 
-         @keyframes volume {
-            from {
-               height: 0;
-            }
-            to {
-               height: 30px;
+            & > div {
+               width: 100%;
+               height: 0%;
+               background-color: var(--white-color);
+               transition: 0.2s linear;
             }
          }
       }
@@ -281,5 +307,68 @@
       .btn-player {
          font-size: 3.2rem;
       }
+   }
+}
+
+.volume-progress {
+   display: inline-block;
+   width: calc(54px + var(--size-ball-progress));
+   height: 100%;
+   user-select: none;
+   -webkit-user-drag: none;
+   transition: 0.17s linear;
+   overflow: hidden;
+   cursor: pointer;
+   padding: 0;
+
+   & > div {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 54px;
+      height: 100%;
+      margin-left: calc(var(--size-ball-progress) / 2);
+   }
+
+   & > div > div {
+      position: absolute;
+      width: 100%;
+   }
+
+   .volume-progress__main {
+      height: 3px;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.3);
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+   }
+
+   .volume-progress__current {
+      height: 100%;
+      transform: scaleX(1);
+      transform-origin: left;
+      background-color: rgb(255, 255, 255);
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: 0.1s linear;
+   }
+
+   .volume-progress__ball-wrapper {
+      transform: translateX(calc(100% + var(--size-ball-progress) / -2));
+      z-index: 3;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: 0.1s linear;
+   }
+
+   .volume-progress__ball {
+      width: var(--size-ball-progress);
+      height: var(--size-ball-progress);
+      border-radius: 9999px;
+      background-color: rgb(255, 255, 255);
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: 0.1s linear;
    }
 }

@@ -12,6 +12,7 @@ import { apiUrl } from '~/contexts/constants';
 
 // const videoSrc = require('~/assets/videos/y2mate.com - One Wish  Vu Tử Bối Cover  Vietsub_480p.mp4');
 const videoSrc = require('~/assets/videos/Mây - Mr.Siro.mp4');
+// const videoSrc = `https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x`;
 
 const cx = classNames.bind(styles);
 
@@ -40,7 +41,7 @@ const Watch = () => {
    const isEndedRef = useRef(false);
 
    const previewListRef = useRef([]);
-
+   const modalPreviewRef = useRef();
    const videoPreviewRef = useRef(0);
 
    const [showControl, setShowControl] = useState();
@@ -60,6 +61,9 @@ const Watch = () => {
    const [volume, setVolume] = useState(2);
    const volumeCurRef = useRef({ level: 2, percent: 1 });
    const volumeRef = useRef();
+   const volumeClrearRef = useRef();
+
+   const tempBufferedRef = useRef(0);
 
    const dragRef = useRef(false);
    const progressRefRef = useRef();
@@ -68,6 +72,11 @@ const Watch = () => {
    const progressBall = useRef();
    const mainProgressfRef = useRef();
    const progressBallMain = useRef();
+
+   const volumeProgressRef = useRef();
+   const volumeProgressMainRef = useRef();
+   const volumeProgressBallRef = useRef();
+   const volumeProgressCurrentRef = useRef();
 
    const curIntervalRef = useRef();
 
@@ -179,7 +188,7 @@ const Watch = () => {
          progressBall.current.style.transform = `translateX(calc(${
             moveProgress * 100
          }% - ${widthProgressBall}px))`;
-      }, (videoRef.current.duration * 600) / widthProgress);
+      }, (videoRef.current.duration * 650) / widthProgress);
    };
 
    const handleMoveProgress = (e) => {
@@ -248,6 +257,10 @@ const Watch = () => {
       previewListRef.current.find((element) => {
          if (element.updateTime >= videoPreviewRef.current) {
             curImgRef.current.style.backgroundImage = `url('${element.img}')`;
+            if (dragRef.current) {
+               modalPreviewRef.current.style.visibility = 'visible';
+               modalPreviewRef.current.style.backgroundImage = `url('${element.img}')`;
+            }
             return true;
          }
       });
@@ -255,13 +268,77 @@ const Watch = () => {
       curTimeImgRef.current.innerHTML = `${convertTime(videoPreviewRef.current)}`;
    };
 
+   const handleAfterChangeProgress = () => {
+      curImgWrapperRef.current.style.display = 'none';
+
+      setShowControl(1);
+
+      if (cur_play_pause_Ref.current || isEndedRef.current) {
+         setPlay(1);
+         videoRef.current.play();
+      }
+
+      modalPreviewRef.current.style.visibility = 'hidden';
+
+      videoRef.current.currentTime = tempCurrentRef.current;
+
+      if (
+         videoRef.current.buffered.end(tempBufferedRef.current) < videoRef.current.currentTime ||
+         videoRef.current.buffered.start(tempBufferedRef.current) > videoRef.current.currentTime
+      ) {
+         for (let i = 0; i < videoRef.current.buffered.length; i++) {
+            if (
+               videoRef.current.buffered.start(i) <= videoRef.current.currentTime &&
+               videoRef.current.buffered.end(i) >= videoRef.current.currentTime
+            ) {
+               progressBuffered.current.style.transform = `scaleX(${
+                  videoRef.current.buffered.end(i) / videoRef.current.duration
+               })`;
+               break;
+            }
+         }
+      }
+
+      mainProgressfRef.current.style.transform = 'scaleY(0.5)';
+      progressBall.current.style.visibility = 'hidden';
+      progressBallMain.current.style.height = '2px';
+      progressBallMain.current.style.width = '2px';
+
+      progressCurrent.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
+         -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
+      progressBall.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
+         -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
+   };
+
    useEffect(() => {
       volumeRef.current.onclick = () => {
          if (volume === 0) {
+            volumeProgressCurrentRef.current.style.transform = `scaleX(1)`;
+            volumeProgressBallRef.current.style.transform = `translateX(calc(100% + var(--size-ball-progress) / -2))`;
+            volumeClrearRef.current.children[0].style.height = '0%';
             setVolume(volumeCurRef.current.level);
          } else {
+            volumeProgressCurrentRef.current.style.transform = `scaleX(0)`;
+            volumeProgressBallRef.current.style.transform = `translateX(calc(var(--size-ball-progress) / -2))`;
+            volumeClrearRef.current.children[0].style.height = '100%';
             setVolume(0);
          }
+      };
+
+      volumeRef.current.onmouseenter = () => {
+         volumeProgressRef.current.style.width = 'calc(54px + var(--size-ball-progress))';
+      };
+
+      volumeProgressRef.current.onmouseenter = () => {
+         volumeProgressRef.current.style.width = 'calc(54px + var(--size-ball-progress))';
+      };
+
+      volumeRef.current.onmouseleave = () => {
+         volumeProgressRef.current.style.width = '0';
+      };
+
+      volumeProgressRef.current.onmouseleave = () => {
+         volumeProgressRef.current.style.width = '0';
       };
    }, [volume]);
 
@@ -275,6 +352,8 @@ const Watch = () => {
          response.data.product_details.map((element) => {
             previewListRef.current = previewListRef.current.concat(element.image);
          });
+
+         console.log(response);
       };
       loadUser();
 
@@ -355,10 +434,6 @@ const Watch = () => {
 
          // progressCurrent.current.style.transform = `scaleX(${0})`;
          // progressBall.current.style.transform = `translateX(calc(${0}% - ${widthProgressBall}px))`;
-
-         // videoRef.current.muted = true;
-         // videoRef.current.autoplay = true;
-         // setPlay(1);
       };
 
       videoRef.current.onplay = () => {
@@ -441,6 +516,7 @@ const Watch = () => {
          videoRef.current.pause();
 
          handleMoveProgress(e);
+         handlePreviewVideo(e);
       };
 
       document.onmousemove = (e) => {
@@ -450,28 +526,30 @@ const Watch = () => {
          }
       };
 
+      videoRef.current.onprogress = () => {
+         if (
+            videoRef.current.buffered.end(tempBufferedRef.current) < videoRef.current.currentTime ||
+            videoRef.current.buffered.start(tempBufferedRef.current) > videoRef.current.currentTime
+         ) {
+            for (let i = 0; i < videoRef.current.buffered.length; i++) {
+               if (
+                  videoRef.current.buffered.start(i) <= videoRef.current.currentTime &&
+                  videoRef.current.buffered.end(i) >= videoRef.current.currentTime
+               ) {
+                  tempBufferedRef.current = i;
+                  break;
+               }
+            }
+         }
+
+         progressBuffered.current.style.transform = `scaleX(${
+            videoRef.current.buffered.end(tempBufferedRef.current) / videoRef.current.duration
+         })`;
+      };
+
       document.onmouseup = (e) => {
          if (dragRef.current) {
-            curImgWrapperRef.current.style.display = 'none';
-
-            setShowControl(1);
-
-            if (cur_play_pause_Ref.current || isEndedRef.current) {
-               setPlay(1);
-               videoRef.current.play();
-            }
-
-            videoRef.current.currentTime = tempCurrentRef.current;
-
-            mainProgressfRef.current.style.transform = 'scaleY(0.5)';
-            progressBall.current.style.visibility = 'hidden';
-            progressBallMain.current.style.height = '2px';
-            progressBallMain.current.style.width = '2px';
-
-            progressCurrent.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
-         -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
-            progressBall.current.style.transition = `transform 0.1s cubic-bezier(0, 0, 0.2, 1),
-         -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
+            handleAfterChangeProgress();
             dragRef.current = false;
          }
       };
@@ -481,6 +559,7 @@ const Watch = () => {
       <div ref={watchRef} className={cx('wrapper')}>
          <div className={cx('watch')}>
             <video ref={videoRef} src={videoSrc}></video>
+            <div ref={modalPreviewRef} className={cx('modal-previews')}></div>
             <div ref={watchControlRef} className={cx('watch-controls')}>
                <div ref={progressRefRef} className={cx('progress')}>
                   <div ref={mainProgressfRef} className={cx('progress-main')}>
@@ -524,7 +603,27 @@ const Watch = () => {
                            <BiVolumeFull />
                         </div>
                      )}
+                     <div ref={volumeClrearRef} className={cx('none-volume-clear')}>
+                        <div></div>
+                     </div>
                   </button>
+
+                  <div ref={volumeProgressRef} className={cx('volume-progress')}>
+                     <div>
+                        <div ref={volumeProgressMainRef} className={cx('volume-progress__main')}>
+                           <div
+                              ref={volumeProgressCurrentRef}
+                              className={cx('volume-progress__current')}
+                           ></div>
+                        </div>
+                        <div
+                           ref={volumeProgressBallRef}
+                           className={cx('volume-progress__ball-wrapper')}
+                        >
+                           <div className={cx('volume-progress__ball')}></div>
+                        </div>
+                     </div>
+                  </div>
 
                   <div className={cx('timeStamp')}>
                      <span ref={timeCurrentRef} className={cx('timeCurrent')}>
