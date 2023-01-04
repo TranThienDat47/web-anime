@@ -310,19 +310,25 @@ const Watch = () => {
          -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1)`;
    };
 
+   const handleVolumeChange = () => {
+      if (volume === 0) {
+         volumeProgressCurrentRef.current.style.transform = `scaleX(1)`;
+         volumeProgressBallRef.current.style.transform = `translateX(calc(100% + var(--size-ball-progress) / -2))`;
+         volumeClrearRef.current.children[0].style.height = '0%';
+         setVolume(volumeCurRef.current.level);
+      } else {
+         volumeProgressCurrentRef.current.style.transform = `scaleX(0)`;
+         volumeProgressBallRef.current.style.transform = `translateX(calc(var(--size-ball-progress) / -2))`;
+         volumeClrearRef.current.children[0].style.height = '100%';
+         setVolume(0);
+      }
+   };
+
    useEffect(() => {
-      volumeRef.current.onclick = () => {
-         if (volume === 0) {
-            volumeProgressCurrentRef.current.style.transform = `scaleX(1)`;
-            volumeProgressBallRef.current.style.transform = `translateX(calc(100% + var(--size-ball-progress) / -2))`;
-            volumeClrearRef.current.children[0].style.height = '0%';
-            setVolume(volumeCurRef.current.level);
-         } else {
-            volumeProgressCurrentRef.current.style.transform = `scaleX(0)`;
-            volumeProgressBallRef.current.style.transform = `translateX(calc(var(--size-ball-progress) / -2))`;
-            volumeClrearRef.current.children[0].style.height = '100%';
-            setVolume(0);
-         }
+      volumeRef.current.addEventListener('click', handleVolumeChange);
+
+      volumeRef.current.onkeyup = (e) => {
+         e.preventDefault();
       };
 
       volumeRef.current.onmouseenter = () => {
