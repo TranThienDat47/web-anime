@@ -1,0 +1,39 @@
+.wrapper {
+    position: fixed;
+    padding: 4px 0px;
+    top: var(--height-default-header);
+    background-color: var(--white);
+    width: var(--width-default-sidebar);
+    height: 100%;
+    z-index: 10;
+
+    .button {
+        width: 100%;
+        height: var(--width-default-sidebar);
+        font-size: 2.4rem;
+        border-radius: 0;
+
+        .content .icon {
+            margin-bottom: 4px;
+        }
+
+        .content div {
+            font-size: 1.2rem;
+            line-height: 1.2rem;
+        }
+
+        div {
+            border-radius: 0;
+        }
+
+        &:hover {
+            background-color: rgba(22, 24, 35, 0.1);
+        }
+    }
+}
+
+@media (min-width: 186px) and (max-width: 754px) {
+    .wrapper {
+        display: none;
+    }
+}
