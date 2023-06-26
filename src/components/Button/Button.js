@@ -75,8 +75,10 @@ function Button({
 
       itemRef.current.addEventListener('mousedown', (e) => {
          if (e.which === 1) {
-            animationRef.current.style.backgroundColor = 'rgba(22, 24, 35, 0.1)';
-            animationRef.current.style.transition = '0s';
+            if (animationRef.current) {
+               animationRef.current.style.backgroundColor = 'rgba(22, 24, 35, 0.1)';
+               animationRef.current.style.transition = '0s';
+            }
             start = true;
          }
       });
@@ -104,8 +106,8 @@ function Button({
          {...props}
       >
          {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
-         <span className={cx('title')}>{children}</span>
-         {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}
+         <div className={cx('title')}>{children}</div>
+         {rightIcon && <span className={cx('icon', 'right')}>{rightIcon}</span>}
          {!transparent || <div ref={animationRef} className={cx('animation')}></div>}
       </Comp>
    );

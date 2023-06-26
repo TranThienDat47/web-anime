@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import styles from './ListProducts.module.scss';
+import styles from './ListProductHome.module.scss';
 
 import { ProductItem } from '~/components/ProductItem';
 

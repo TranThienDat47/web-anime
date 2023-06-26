@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Watch.module.scss';
 
-import Video from '~/views/Watch/components/Video/index';
+import Video from '~/components/Video/index';
 
 const cx = classNames.bind(styles);
 

@@ -12,9 +12,7 @@ function Headless({
    className,
    render = defaultFn,
    visible = false,
-   placement = 'top-left',
    onClick,
-   // onClickOutside = defaultFn,
    offset = [],
    ...passProp
 }) {
@@ -24,26 +22,8 @@ function Headless({
    };
    const wrapperRef = useRef();
 
-   // const checkNode = (parent, children) => {
-   //    let node = children.parentNode;
-   //    while (node !== null) {
-   //       if (node === parent) return true;
-   //       node = node.parentNode;
-   //    }
-   //    return false;
-   // };
-
-   // useEffect(() => {
-   //    window.addEventListener('click', (e) => {
-   //       if (!checkNode(wrapperRef.current, e.target)) {
-   //          return onClickOutside(e);
-   //       }
-   //    });
-   // }, []);
-
    const classes = cx('wrapper', {
       [className]: className,
-      [className]: placement,
    });
 
    return (

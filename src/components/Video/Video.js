@@ -226,6 +226,8 @@ const Watch = () => {
    }, []);
 
    const handlePreviewVideo = useCallback((e) => {
+      curImgWrapperRef.current.style.display = 'block';
+
       const leftProgress = progressRefRef.current.getBoundingClientRect().left;
       const widthProgress = progressRefRef.current.getBoundingClientRect().width;
 
@@ -767,9 +769,9 @@ const Watch = () => {
             progressBall.current.style.visibility = 'hidden';
             progressBallMain.current.style.height = '2px';
             progressBallMain.current.style.width = '2px';
-
-            curImgWrapperRef.current.style.display = 'none';
          }
+
+         curImgWrapperRef.current.style.display = 'none';
 
          hoverProgress.current = false;
       };
@@ -781,8 +783,6 @@ const Watch = () => {
 
       progressRefRef.current.onmousedown = (e) => {
          dragVideoRef.current = true;
-
-         curImgWrapperRef.current.style.display = 'block';
 
          clearTimeout(curIntervalRef.current);
 

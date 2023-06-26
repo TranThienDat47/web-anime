@@ -68,7 +68,7 @@ const AuthContextProvider = ({ children }) => {
          return response.data;
       } catch (error) {
          if (error.response.data) return error.response.data;
-         else return { success: false, message: error.message };
+         else return { success: false, message: error.message.message };
       }
    };
 
@@ -84,7 +84,7 @@ const AuthContextProvider = ({ children }) => {
          return response.data;
       } catch (error) {
          if (error.response.data) return error.response.data;
-         else return { success: false, message: error.message };
+         else return { success: false, message: error.message.message };
       }
    };
 
@@ -102,7 +102,7 @@ const AuthContextProvider = ({ children }) => {
          }
       } catch (error) {
          if (error.response.data) return error.response.data;
-         else return { success: false, message: error.message };
+         else return { success: false, message: error.message.message };
       }
    };
 

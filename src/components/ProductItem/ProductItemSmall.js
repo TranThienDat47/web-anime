@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import images from '~/assets/img';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import styles from './ProductItem.module.scss';
+import styles from './ProductItemSmall.module.scss';
 import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);

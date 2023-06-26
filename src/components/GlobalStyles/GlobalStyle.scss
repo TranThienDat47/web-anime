@@ -4,7 +4,13 @@
    --primary: rgb(17, 234, 74);
    --black: #000;
    --text-color: #161823;
+   --text-bland: rgba(23, 26, 39, 0.63);
    --white: #fff;
+   --border-color: rgba(22, 24, 35, 0.13);
+   --box-shadow-color: rgba(23, 26, 39, 0.26);
+   --hover-item-color: rgba(23, 26, 39, 0.06);
+   --took-tip-color: rgba(23, 26, 39, 0.59);
+
    --default-layout-header-height: 60px;
    --default-layout-width: 1150px;
    // --font-family: 'ProximaNova', sans-serif;
@@ -123,4 +129,36 @@ a {
    position: absolute;
    top: 50%;
    left: 50%;
+}
+
+.tooltip {
+   position: relative;
+
+   &::after {
+      content: attr(name-tooltip);
+      position: absolute;
+      top: calc(100% + 9px);
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: max-content;
+      max-width: 300px;
+
+      display: none;
+      justify-content: center;
+      align-items: center;
+
+      padding: 6px 9px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--white);
+      border-radius: 6px;
+      background-color: var(--took-tip-color);
+   }
+
+   &:hover::after {
+      display: flex;
+   }
 }

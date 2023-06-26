@@ -49,7 +49,6 @@ function Search() {
                `${apiUrl}/products/search?mode=less&key=${searchValueDebound}&page=1`,
             );
             setSearchResult(response.data.products);
-            setShowResult(true);
          };
          loadUser();
       }
@@ -60,15 +59,18 @@ function Search() {
          if (searchValue.trim() !== '') {
             navigate(`/search?search_query=${searchValue}`);
             inputRef.current.blur();
+            setShowResult(false);
          }
       };
+   }, [searchValue]);
 
+   useEffect(() => {
       inputRef.current.onkeydown = (event) => {
          if (event.key === 'Enter') {
             btnSearchRef.current.click();
          }
       };
-   });
+   }, []);
 
    const handleMouseDown = (e) => {
       if (e.button === 0) {
@@ -131,7 +133,7 @@ function Search() {
 
    return (
       <Headless
-         visible={showResult && searchResult.length > 0}
+         visible={showResult && searchValueDebound.trim().length > 0 && searchResult.length > 0}
          className={cx('wrapper')}
          offset={[9, 0]}
          render={handleRender}
@@ -150,8 +152,8 @@ function Search() {
                   setShowResult(true);
                }}
                onBlur={(e) => {
+                  setShowResult(false);
                   if (!blurRef.current) {
-                     setShowResult(false);
                   } else {
                      blurRef.current = false;
                      inputRef.current.focus();
@@ -164,19 +166,18 @@ function Search() {
                </button>
             )}
 
-            <Headless className={cx('search-wrapper')} content="Search" placement="right">
-               <button
-                  className={cx('search-btn')}
-                  ref={btnSearchRef}
-                  onMouseDown={(e) => {
-                     e.preventDefault();
-                     inputRef.current.blur();
-                     setShowResult(false);
-                  }}
-               >
-                  <IoSearchOutline className={cx('search-color')} />
-               </button>
-            </Headless>
+            <button
+               className={cx('search-btn', 'tooltip')}
+               name-tooltip={'Search'}
+               ref={btnSearchRef}
+               onMouseDown={(e) => {
+                  e.preventDefault();
+                  inputRef.current.blur();
+                  setShowResult(false);
+               }}
+            >
+               <IoSearchOutline className={cx('search-color')} />
+            </button>
          </div>
       </Headless>
    );

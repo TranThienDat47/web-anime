@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Auth from './views/Auth/index.js';
-import AuthContextProvider from './contexts/auth/AuthContext';
-import ProtectedRoute from './routing/ProtectedRoute';
-import Account from './routing/Account';
-import Verify from './routing/Verify';
-import { publicRoutes, privateRoutes } from '~/routes';
-import DefaultLayout from '~/layout/DefaultLayout';
 import { Fragment } from 'react';
+
+import Auth from '~/views/Auth/index.js';
+import AuthContextProvider from '~/contexts/auth/AuthContext';
+import ProtectedRoute from '~/route/routing/ProtectedRoute';
+import Account from '~/route/routing/Account';
+import Verify from '~/route/routing/Verify';
+import { publicRoutes, privateRoutes } from '~/route/routes';
+import DefaultLayout from '~/layout/DefaultLayout';
 
 function App() {
    return (

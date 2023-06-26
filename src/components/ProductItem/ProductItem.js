@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 
-import images from '~/assets/img';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
+
+import images from '~/assets/img';
 import styles from './ProductItem.module.scss';
-import { useEffect, useRef } from 'react';
 import Button from '~/components/Button';
-import { Link } from 'react-router-dom';
+import { Wrapper as PopperWrapper } from '~/components/Popper';
+import MenuItem from '~/components/Popper/Menu/MenuItem';
+import Headless from '../Headless';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +21,9 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
    const hoverOption = useRef(false);
    const itemWrapperRef = useRef();
    const optionRef = useRef();
+
+   const [showMenuOption, setShowMenuOption] = useState(false);
+
    let props = {
       onClick,
       ...passProp,
@@ -43,9 +50,11 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
                if (!hoverOption.current) {
                   optionRef.current.style.display = 'none';
                }
+               setShowMenuOption(false);
             } else if (!checkNode(optionRef.current, e.target) && click.current === true) {
                optionRef.current.style.display = 'none';
                click.current = false;
+               setShowMenuOption(false);
             }
          }
       });
@@ -119,6 +128,16 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
       });
    });
 
+   const renderOptionItem = (
+      items = [
+         { title: 'Thêm vào danh sách yêu thích' },
+         { title: 'Chia sẻ' },
+         { title: 'Báo cáo vấn đề', separate: true },
+      ],
+   ) => {
+      return items.map((item, index) => <MenuItem small key={index} data={item}></MenuItem>);
+   };
+
    const classes = cx('wrapper', {
       extraLarge,
    });
@@ -136,14 +155,26 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
                      e.target.src = images.noImage;
                   }}
                />
+               {data.episodes ? (
+                  <div className={cx('episode')}>
+                     <span className={cx('current')}>12</span> /
+                     <span className={cx('episodes')}>12</span>
+                  </div>
+               ) : (
+                  <></>
+               )}
             </div>
             <div className={cx('info-wrapper')}>
-               <div ref={animationRef} className={cx('animation')}></div>
                <div className={cx('info')}>
                   <h4 className={cx('name')}>
                      <div>{data.name}</div>
                   </h4>
                   <div className={cx('productname')}>{data.anotherName}</div>
+                  {!extraLarge ? (
+                     <div className={cx('description')}>{data.description}</div>
+                  ) : (
+                     <></>
+                  )}
                   <div className={cx('view')}>
                      {data.view && (
                         <>
@@ -153,28 +184,32 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
                         </>
                      )}
                   </div>
-
-                  {data.episodes ? (
-                     <div className={cx('episode')}>
-                        <span className={cx('current')}>12</span> /
-                        <span className={cx('episodes')}>12</span>
-                     </div>
-                  ) : (
-                     <></>
-                  )}
                </div>
             </div>
          </Link>
 
          <div ref={optionRef} className={cx('show-option')}>
-            <Button
-               className={cx('option', 'menu')}
-               transparent
-               backgroundColor="rgba(255, 255, 255, 0.94)"
+            <Headless
+               visible={showMenuOption}
+               offset={[31, 159]}
+               className={cx('option-menu')}
+               render={() => (
+                  <PopperWrapper className={cx('option-menu')}>{renderOptionItem()}</PopperWrapper>
+               )}
             >
-               <HiOutlineDotsVertical />
-            </Button>
+               <Button
+                  className={cx('option', 'menu')}
+                  transparent
+                  backgroundColor="rgba(255, 255, 255, 0.94)"
+                  onClick={() => {
+                     setShowMenuOption((prev) => !prev);
+                  }}
+               >
+                  <HiOutlineDotsVertical />
+               </Button>
+            </Headless>
          </div>
+         <div ref={animationRef} className={cx('animation')}></div>
       </div>
    );
 }
