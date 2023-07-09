@@ -1,4 +1,4 @@
-export const init = {
+export const initialState = {
    authLoading: true,
    isAuthenticated: false,
    isVerify: false,

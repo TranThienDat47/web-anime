@@ -1,8 +1,10 @@
-import Search from '~/views/Search';
 import config from '~/config';
+
+import Search from '~/views/Search';
 import Home from '~/views/Home';
 import Watch from '~/views/Watch';
 import Product from '~/views/Product';
+import { Fragment } from 'react';
 
 const publicRoutes = [
    { path: config.routes.home, compnent: Home },
@@ -11,6 +13,6 @@ const publicRoutes = [
    { path: config.routes.watch, compnent: Watch },
 ];
 
-const privateRoutes = [{ path: null, compnent: null, layout: null }];
+const privateRoutes = [{ path: null, compnent: Fragment, layout: null }];
 
 export { publicRoutes, privateRoutes };

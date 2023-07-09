@@ -8,7 +8,7 @@ import { MdReplay } from 'react-icons/md';
 import { RiVolumeDownFill, RiVolumeUpFill } from 'react-icons/ri';
 import { BiSkipPrevious, BiSkipNext, BiExitFullscreen, BiFullscreen } from 'react-icons/bi';
 
-const videoSrc = require('https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x');
+const videoSrc = null;
 
 const cx = classNames.bind(styles);
 

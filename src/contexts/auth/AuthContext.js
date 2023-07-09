@@ -1,6 +1,7 @@
-import { createContext, useReducer, useEffect } from 'react';
-import { authReducer, init } from '~/reducers';
 import axios from 'axios';
+import { createContext, useReducer, useEffect } from 'react';
+
+import { authReducer, initialState } from '~/reducers/authReducer';
 import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '../constants';
 import setAuthToken from '../../utils/setAuthToken';
 const AuthContext = createContext();
@@ -8,7 +9,7 @@ const AuthContext = createContext();
 export { AuthContext };
 
 const AuthContextProvider = ({ children }) => {
-   const [authState, dispatch] = useReducer(authReducer, init);
+   const [authState, dispatch] = useReducer(authReducer, initialState);
 
    // Authenticate user
    const loadUser = async () => {
@@ -57,11 +58,23 @@ const AuthContextProvider = ({ children }) => {
       loadUser();
    }, []);
 
+   const loginUserWithGoogle = async (accessToken) => {
+      if (accessToken) {
+         localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, accessToken);
+         await loadUser();
+
+         return true;
+      } else {
+         return false;
+      }
+   };
+
    const loginUser = async (userForm) => {
       try {
          const response = await axios.post(`${apiUrl}/auth/login`, userForm);
          if (response.data.success) {
             localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.accessToken);
+
             await loadUser();
          }
 
@@ -88,6 +101,10 @@ const AuthContextProvider = ({ children }) => {
       }
    };
 
+   const logout = async () => {
+      localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
+   };
+
    const verify = async (verifyForm) => {
       localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, verifyForm.accessToken);
       try {
@@ -106,7 +123,14 @@ const AuthContextProvider = ({ children }) => {
       }
    };
 
-   const authContextData = { loginUser, registerUser, authState, verify };
+   const authContextData = {
+      loginUser,
+      loginUserWithGoogle,
+      registerUser,
+      logout,
+      authState,
+      verify,
+   };
 
    return <AuthContext.Provider value={authContextData}>{children}</AuthContext.Provider>;
 };

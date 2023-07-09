@@ -4,10 +4,10 @@ import classNames from 'classnames/bind';
 import axios from 'axios';
 
 import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '~/contexts/constants';
-import RegisterForm from '~/components/auth/RegisterForm';
-import LoginForm from '~/components/auth/LoginForm';
+import RegisterForm from '~/views/Auth/components/RegisterForm';
+import LoginForm from '~/views/Auth/components/LoginForm';
 import { AuthContext } from '~/contexts/auth';
-import imgs from '~/assets/img';
+
 import styles from './Auth.module.scss';
 
 const cx = classNames.bind(styles);
@@ -32,11 +32,6 @@ const Auth = ({ authRoute }) => {
       }
    };
 
-   const onClickLogOut = (e) => {
-      localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
-      window.location.reload();
-   };
-
    let body;
 
    if (isAuthenticated && !isVerify) {
@@ -46,7 +41,7 @@ const Auth = ({ authRoute }) => {
             <Button type="submit" className={cx('button')} onClick={(e) => onClickReSend(e)}>
                Gửi lại gmail xác nhận!
             </Button>
-            <Button variant="danger" className={cx('button', 'danger')} onClick={onClickLogOut}>
+            <Button href="/logout" variant="danger" className={cx('button', 'danger')}>
                Đăng xuất!
             </Button>
          </div>
@@ -62,14 +57,7 @@ const Auth = ({ authRoute }) => {
 
    return (
       <div className={cx('wrapper')}>
-         <div className={cx('inner-wrapper')}>
-            <div className={cx('inner')}>
-               <h1>My blog</h1>
-               <img src={imgs.logo} alt="logo" />
-               <h4>Share knowledge and experience!</h4>
-               {body}
-            </div>
-         </div>
+         <div className={cx('inner')}>{body}</div>
       </div>
    );
 };

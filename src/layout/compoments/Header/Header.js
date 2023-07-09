@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, Fragment } from 'react';
+import { useEffect, useRef, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
-import { AiOutlineMenu, AiOutlineBell } from 'react-icons/ai';
+import { AuthContext } from '~/contexts/auth';
 
 import config from '~/config';
 import imgs from '~/assets/img';
@@ -11,7 +11,6 @@ import Button from '~/components/Button';
 import styles from './Header.module.scss';
 import HeaderSidebar from './HeaderSidebar';
 import Notification from './Notification';
-import Account from './Account';
 import Menu from '~/components/Popper/Menu';
 
 import { BiUserCircle } from 'react-icons/bi';
@@ -22,6 +21,8 @@ import {
    AiOutlineThunderbolt,
    AiOutlineRight,
    AiOutlineCheck,
+   AiOutlineMenu,
+   AiOutlineBell,
 } from 'react-icons/ai';
 import { IoLanguageOutline } from 'react-icons/io5';
 import { RiSettingsLine } from 'react-icons/ri';
@@ -29,9 +30,12 @@ import { RiSettingsLine } from 'react-icons/ri';
 const cx = classNames.bind(styles);
 
 function Header() {
+   const {
+      authState: { isAuthenticated, isVerify, user },
+   } = useContext(AuthContext);
+
    const [showNav, setShowNav] = useState(true);
    const [showNotification, setShowNotification] = useState(false);
-   const [showAccount, setShowAccount] = useState(false);
 
    const dataInit = [
       {
@@ -93,6 +97,7 @@ function Header() {
          },
       },
       {
+         to: '/logout',
          title: <div className={cx('title')}>Đăng xuất</div>,
          left_icon: <AiOutlineLogout className={cx('icon')} />,
          separate: true,
@@ -128,20 +133,6 @@ function Header() {
       };
    }, [notificationResultRef]);
 
-   useEffect(() => {
-      const handleClickOutsideAccount = (e) => {
-         if (accountRef.current && !accountRef.current.parentNode.contains(e.target)) {
-            setShowAccount(false);
-         }
-      };
-
-      document.addEventListener('click', handleClickOutsideAccount);
-
-      return () => {
-         document.removeEventListener('click', handleClickOutsideAccount);
-      };
-   }, [accountRef]);
-
    return (
       <>
          <header className={cx('wrapper')}>
@@ -164,25 +155,53 @@ function Header() {
 
             <div className={cx('infor')}>
                <div className={cx('infor-icon')}>
-                  <Button
-                     transparent
-                     className={cx('notification', 'tooltip')}
-                     name-tooltip="Thông báo"
-                     onClick={() => {
-                        setShowNotification((prev) => !prev);
-                     }}
-                  >
-                     <AiOutlineBell />
-                  </Button>
-
-                  {showNotification && <Notification ref={notificationResultRef} />}
+                  {isAuthenticated ? (
+                     <>
+                        <Button
+                           transparent
+                           className={cx('header__icon', 'notification', 'tooltip')}
+                           name-tooltip="Thông báo"
+                           onClick={() => {
+                              setShowNotification((prev) => !prev);
+                           }}
+                        >
+                           <AiOutlineBell />
+                        </Button>
+                        {showNotification && <Notification ref={notificationResultRef} />}
+                     </>
+                  ) : (
+                     <>
+                        <Button
+                           to="/login"
+                           className={cx('header__icon', 'login', 'tooltip')}
+                           name-tooltip="Đăng nhập"
+                           leftIcon={<BiUserCircle />}
+                           rounded
+                        >
+                           <p>Đăng nhập</p>
+                        </Button>
+                     </>
+                  )}
                </div>
                <div className={cx('infor-icon')}>
-                  <Menu items={dataInit} hideOnClick={true} className={cx('wrapper-account')}>
-                     <button className={cx('user')}>
-                        <img src={imgs.noImage} alt="Logo" className={cx('avt')} />
-                     </button>
-                  </Menu>
+                  {isAuthenticated ? (
+                     <Menu items={dataInit} hideOnClick={true} className={cx('wrapper-account')}>
+                        <button className={cx('user')}>
+                           <img src={imgs.noImage} alt="Logo" className={cx('avt')} />
+                        </button>
+                     </Menu>
+                  ) : (
+                     <Menu items={dataInit} hideOnClick={true} className={cx('wrapper-account')}>
+                        <Button
+                           className={cx('header__icon', 'option', 'menu', 'tooltip')}
+                           transparent
+                           name-tooltip="Cài đặt"
+                           backgroundColor="rgba(255, 255, 255, 0.94)"
+                        >
+                           <RiSettingsLine />
+                        </Button>
+                     </Menu>
+                  )}
                </div>
             </div>
          </header>

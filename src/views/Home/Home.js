@@ -1,13 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import styles from './Home.module.scss';
 import { ListProductHome } from '~/components/ListProduct';
+import { ProductContext } from '~/contexts/product';
 
 const cx = classNames.bind(styles);
 
 function Home() {
+   const {
+      productState: { suggestedProducts },
+   } = useContext(ProductContext);
+
+   // const [newResult, setNewResult] = useState(Array(12).fill(0));
    const [newResult, setNewResult] = useState(Array(12).fill(0));
+
+   console.log(suggestedProducts);
+
+   useEffect(() => {
+      if (suggestedProducts.length === 0) {
+         setNewResult(Array(12).fill(0));
+      } else setNewResult(suggestedProducts);
+   }, [suggestedProducts]);
 
    return (
       <div className={cx('wrapper')}>

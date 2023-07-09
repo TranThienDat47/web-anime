@@ -1,9 +1,10 @@
 @import 'normalize.css';
 
 :root {
-   --primary: rgb(17, 234, 74);
+   --primary: #fff;
+   --primary-second: rgb(239 243 246);
    --black: #000;
-   --text-color: #161823;
+   --text-color: #272e34;
    --text-bland: rgba(23, 26, 39, 0.63);
    --white: #fff;
    --border-color: rgba(22, 24, 35, 0.13);
@@ -33,6 +34,17 @@
    --ytd-rich-grid-item-margin: 16px;
    --ytd-rich-grid-item-max-width: 360px;
 
+   //btn
+   --btn-submit: #1a73e8;
+   --btn-submit-hover: #1268da;
+
+   //link
+   --link-color: #1a73e8;
+   --link-color-hover: #175cb7;
+
+   //input
+   --outline-input-color: #1a73e8;
+
    @media (min-width: 0px) and (max-width: 640px) {
       --ytd-rich-grid-items-per-row: 3;
    }
@@ -56,7 +68,7 @@ body {
    color: var(--text-color);
    margin: 0;
    overflow-y: auto;
-   background-color: rgba(17, 234, 74, 0.04);
+   background-color: var(--primary-second);
 }
 
 body.scroll_lock {
@@ -161,4 +173,8 @@ a {
    &:hover::after {
       display: flex;
    }
+}
+
+li {
+   list-style: none;
 }

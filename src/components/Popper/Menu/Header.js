@@ -19,7 +19,7 @@ function Header({ title, onBack }) {
 }
 
 Header.propTypes = {
-   title: PropTypes.string.isRequired,
+   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
    onBack: PropTypes.func.isRequired,
 };
 

@@ -12,16 +12,16 @@ import { BiSkipPrevious, BiSkipNext, BiExitFullscreen, BiFullscreen } from 'reac
 // import axios from 'axios';
 // import { apiUrl } from '~/contexts/constants';
 
-const videoSrc = require('https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x');
+// const videoSrc = require('https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x');
 
-const cx = classNames.bind(styles);
+// const cx = classNames.bind(styles);
 
-async function fetchMovie(id) {
-   const response = await fetch(
-      `https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x`,
-   );
-   return response.json();
-}
+// async function fetchMovie(id) {
+//    const response = await fetch(
+//       `https://drive.google.com/uc?export=download&id=10Q5IPuGEsigU-EChMrPySFdqKWZRmD3x`,
+//    );
+//    return response.json();
+// }
 
 const Watch = () => {
    useEffect(async () => {}, []);
