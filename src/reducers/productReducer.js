@@ -2,8 +2,9 @@ export const initialState = {
    allProducts: [],
    newProducts: [],
    suggestedProducts: [],
+   pageSuggestedProducts: -1,
    loading: false,
-   loadingMore: false,
+   loadingMore: true,
    error: null,
    hasMore: true,
 };
@@ -11,7 +12,15 @@ export const initialState = {
 export const productReducer = (state, action) => {
    const {
       type,
-      payload: { allProducts, newProducts, suggestedProducts, error },
+      payload: {
+         allProducts,
+         newProducts,
+         suggestedProducts,
+         error,
+         hasMore,
+         loadingMore,
+         pageSuggestedProducts,
+      },
    } = action;
 
    switch (type) {
@@ -46,8 +55,10 @@ export const productReducer = (state, action) => {
       case 'FETCH_SUGGESTED_PRODUCTS_SUCCESS':
          return {
             ...state,
-            loading: false,
+            loadingMore: false,
             suggestedProducts: [...state.suggestedProducts, ...suggestedProducts],
+            hasMore,
+            pageSuggestedProducts,
          };
       case 'FETCH_SUGGESTED_PRODUCTS_FAILURE':
          return {

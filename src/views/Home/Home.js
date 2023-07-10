@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import styles from './Home.module.scss';
@@ -9,19 +9,51 @@ const cx = classNames.bind(styles);
 
 function Home() {
    const {
-      productState: { suggestedProducts },
+      productState: {
+         suggestedProducts,
+         pageSuggestedProducts,
+         newProducts,
+         hasMore,
+         loading,
+         loadingMore,
+         error,
+      },
+      loadHomeSuggested,
+      loadNewHome,
+      beforeLoadHomeSuggested,
    } = useContext(ProductContext);
 
-   // const [newResult, setNewResult] = useState(Array(12).fill(0));
    const [newResult, setNewResult] = useState(Array(12).fill(0));
 
-   console.log(suggestedProducts);
+   const handleScroll = useCallback(() => {
+      if (
+         Math.floor(window.innerHeight + document.documentElement.scrollTop) >=
+         document.documentElement.offsetHeight - 1
+      ) {
+         beforeLoadHomeSuggested();
+      }
+   }, []);
 
    useEffect(() => {
-      if (suggestedProducts.length === 0) {
+      loadNewHome();
+   }, []);
+
+   useEffect(() => {
+      if (!loadingMore || !hasMore) return;
+
+      loadHomeSuggested(pageSuggestedProducts + 1);
+   }, [loadingMore, hasMore]);
+
+   useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+   }, []);
+
+   useEffect(() => {
+      if (newProducts?.length === 0) {
          setNewResult(Array(12).fill(0));
-      } else setNewResult(suggestedProducts);
-   }, [suggestedProducts]);
+      } else setNewResult(newProducts);
+   }, [newProducts]);
 
    return (
       <div className={cx('wrapper')}>
@@ -40,11 +72,14 @@ function Home() {
                   <span className={cx('title')}>Đề xuất</span>
                </div>
 
-               <ListProductHome data={newResult} />
+               <ListProductHome
+                  data={suggestedProducts.length > 0 ? suggestedProducts : Array(10).fill(0)}
+               />
             </div>
+            {loadingMore || <div className={cx('loading-more')}>Loading more...</div>}
          </div>
       </div>
    );
 }
 
-export default Home;
+export default React.memo(Home);
