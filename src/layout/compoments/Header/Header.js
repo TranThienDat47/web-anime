@@ -34,7 +34,6 @@ function Header() {
       authState: { isAuthenticated, isVerify, user },
    } = useContext(AuthContext);
 
-   const [showNav, setShowNav] = useState(true);
    const [showNotification, setShowNotification] = useState(false);
 
    const dataInit = [
@@ -114,7 +113,8 @@ function Header() {
    ];
 
    const notificationResultRef = useRef();
-   const accountRef = useRef();
+
+   const childRef = useRef(null);
 
    useEffect(() => {
       const handleClickOutside = (e) => {
@@ -141,7 +141,7 @@ function Header() {
                   className={cx('nav-icon')}
                   onClick={(e) => {
                      e.preventDefault();
-                     setShowNav(showNav ? false : true);
+                     childRef.current.showAndHide();
                   }}
                />
                <Link to={config.routes.home} className={cx('logo-link')}>
@@ -205,7 +205,7 @@ function Header() {
                </div>
             </div>
          </header>
-         <HeaderSidebar showNav={showNav} />
+         <HeaderSidebar ref={childRef} />
       </>
    );
 }

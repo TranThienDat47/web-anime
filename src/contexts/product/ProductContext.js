@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createContext, useReducer, useEffect, useState } from 'react';
 
-import { apiUrl } from '../constants';
+import { apiUrl } from '../../config/constants';
 
 import { productReducer, initialState } from '~/reducers/productReducer';
 

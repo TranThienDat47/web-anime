@@ -11,7 +11,7 @@ function ListProducts({ data = [], ...props }) {
          <ul className={cx('list')}>
             {data.map((res, index) => (
                <li key={index} className={cx('item')}>
-                  <ProductItem extraLarge data={res} />
+                  <ProductItem key={index} extraLarge data={res} />
                </li>
             ))}
          </ul>

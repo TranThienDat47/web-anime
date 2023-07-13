@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import imgs from '~/assets/img';
@@ -8,13 +8,15 @@ import styles from './HeaderSidebar.module.scss';
 
 const cx = classNames.bind(styles);
 
-function HeaderSidebar({ showNav: defaultShowNav }) {
+const HeaderSidebar = forwardRef((prop, ref) => {
    const navRef = useRef();
    const pseudoRef = useRef();
    let drag = useRef(false);
    let clientX_temp = 0,
       right,
       width;
+
+   const [showNav, setShowNav] = useState(false);
 
    const handleMouseDownNav = (e) => {
       if (e.which === 1) {
@@ -55,15 +57,7 @@ function HeaderSidebar({ showNav: defaultShowNav }) {
          if (right >= (width * 1) / 2) {
             navRef.current.style.left = 0 + 'px';
             navRef.current.style.transition = '0.15s cubic-bezier(0.25, 0.55, 0, 0)';
-
-            if (!document.body.classList.contains('scroll_lock')) {
-               //Scroll body
-               const curY = window.scrollY;
-               document.body.style.top = `${-curY}px`;
-               document.body.classList.add('scroll_lock');
-            }
          } else if (right < (width * 1) / 2) {
-            if (document.body.classList.contains('scroll_lock')) pseudoRef.current.click();
             navRef.current.style.transition = '0.2s cubic-bezier(0, 0, 0, 1)';
             navRef.current.style.left = -240 + 'px';
             pseudoRef.current.style.display = 'none';
@@ -84,54 +78,49 @@ function HeaderSidebar({ showNav: defaultShowNav }) {
       };
    });
 
-   const handlePsedo = () => {
-      pseudoRef.current.style.display = 'none';
-      navRef.current.style.left = -240 + 'px';
+   const handleShowNav = () => {
+      navRef.current.style.left = 0 + 'px';
 
-      //Scroll body
-      const curY = +document.body.style.top.split('px')[0];
-      document.body.classList.remove('scroll_lock');
-      window.scrollTo(0, -curY);
-
-      document.body.style = '';
+      pseudoRef.current.style.display = 'block';
+      pseudoRef.current.style.opacity = 0.4;
    };
 
-   const handleShowAndHide = () => {
-      if (navRef.current) {
-         if (navRef.current.style.left !== '-240px' || !navRef.current.style.left) {
-            pseudoRef.current.click();
-         } else {
-            //Scroll body
-            const curY = window.scrollY;
-            document.body.style.top = `${-curY}px`;
-            document.body.classList.add('scroll_lock');
-
-            navRef.current.style.left = 0 + 'px';
-
-            pseudoRef.current.style.display = 'block';
-            pseudoRef.current.style.opacity = 0.4;
-         }
-      }
+   const handleHideNav = () => {
+      pseudoRef.current.style.display = 'none';
+      navRef.current.style.left = -240 + 'px';
    };
 
    useEffect(() => {
-      handleShowAndHide();
-   }, [defaultShowNav]);
+      if (showNav) {
+         handleShowNav();
+      } else handleHideNav();
+   }, [showNav]);
+
+   useImperativeHandle(ref, () => ({
+      showAndHide() {
+         setShowNav((prev) => !prev);
+      },
+   }));
 
    return (
       <>
          <div className={cx('nav')} ref={navRef}>
             <div className={cx('header-wrapper')}>
-               <AiOutlineMenu className={cx('icon')} onClick={handleShowAndHide} />
+               <AiOutlineMenu
+                  className={cx('icon')}
+                  onClick={() => {
+                     setShowNav((prev) => !prev);
+                  }}
+               />
                <Link to={config.routes.home} className={cx('logo-link')}>
                   <img src={imgs.logo} alt="Blog" />
                </Link>
             </div>
             <div className={cx('item')}></div>
          </div>
-         <div className={cx('pseudo')} ref={pseudoRef} onClick={handlePsedo}></div>
+         <div className={cx('pseudo')} ref={pseudoRef} onClick={handleHideNav}></div>
       </>
    );
-}
+});
 
 export default HeaderSidebar;

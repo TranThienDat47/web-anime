@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import classNames from 'classnames/bind';
 import axios from 'axios';
 
-import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '~/contexts/constants';
+import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '~/config/constants';
 import RegisterForm from '~/views/Auth/components/RegisterForm';
 import LoginForm from '~/views/Auth/components/LoginForm';
 import { AuthContext } from '~/contexts/auth';

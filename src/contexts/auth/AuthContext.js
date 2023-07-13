@@ -2,8 +2,9 @@ import axios from 'axios';
 import { createContext, useReducer, useEffect } from 'react';
 
 import { authReducer, initialState } from '~/reducers/authReducer';
-import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '../constants';
+import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from '../../config/constants';
 import setAuthToken from '../../utils/setAuthToken';
+import AuthServices from '~/services/AuthServices';
 const AuthContext = createContext();
 
 export { AuthContext };
@@ -13,40 +14,28 @@ const AuthContextProvider = ({ children }) => {
 
    // Authenticate user
    const loadUser = async () => {
-      if (localStorage[LOCAL_STORAGE_TOKEN_NAME]) {
-         setAuthToken(localStorage[LOCAL_STORAGE_TOKEN_NAME]);
-      }
+      const response = await AuthServices.authorization();
 
-      if (axios.defaults.headers.common['Authorization'])
-         try {
-            const response = await axios.get(`${apiUrl}/auth`);
-            if (response.data.success) {
-               if (response.data.isverify) {
-                  dispatch({
-                     type: 'SET_AUTH',
-                     payload: { isAuthenticated: true, isVerify: true, user: response.data.user },
-                  });
-               } else if (!response.data.isverify) {
-                  dispatch({
-                     type: 'SET_AUTH',
-                     payload: { isAuthenticated: true, isVerify: false, user: response.data.user },
-                  });
-               }
-            } else if (!response.data.success && !response.data.isverify) {
-               dispatch({
-                  type: 'SET_AUTH',
-                  payload: { isAuthenticated: false, user: null },
-               });
-            }
-         } catch (error) {
-            localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
-            setAuthToken(null);
+      if (response && response.success) {
+         if (response.isverify) {
+            dispatch({
+               type: 'SET_AUTH',
+               payload: { isAuthenticated: true, isVerify: true, user: response.user },
+            });
+         } else if (!response.isverify) {
+            dispatch({
+               type: 'SET_AUTH',
+               payload: { isAuthenticated: true, isVerify: false, user: response.user },
+            });
+         } else if (!response.success && !response.isverify) {
             dispatch({
                type: 'SET_AUTH',
                payload: { isAuthenticated: false, user: null },
             });
          }
-      else {
+      } else {
+         localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
+
          dispatch({
             type: 'SET_AUTH',
             payload: { isAuthenticated: false, user: null },
@@ -61,6 +50,7 @@ const AuthContextProvider = ({ children }) => {
    const loginUserWithGoogle = async (accessToken) => {
       if (accessToken) {
          localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, accessToken);
+
          await loadUser();
 
          return true;
@@ -71,16 +61,17 @@ const AuthContextProvider = ({ children }) => {
 
    const loginUser = async (userForm) => {
       try {
-         const response = await axios.post(`${apiUrl}/auth/login`, userForm);
-         if (response.data.success) {
-            localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.accessToken);
+         const response = await AuthServices.loginUser(userForm);
+
+         if (response && response.success) {
+            localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.accessToken);
 
             await loadUser();
          }
 
-         return response.data;
+         return response;
       } catch (error) {
-         if (error.response.data) return error.response.data;
+         if (error.response) return error.response;
          else return { success: false, message: error.message.message };
       }
    };

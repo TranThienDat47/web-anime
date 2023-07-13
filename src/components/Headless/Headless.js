@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
+import { memo, useEffect, useRef } from 'react';
 
 import styles from './Headless.module.scss';
-import { memo, useRef } from 'react';
 
 const cx = classNames.bind(styles);
 const defaultFn = () => {};
@@ -13,6 +13,7 @@ function Headless({
    render = defaultFn,
    visible = false,
    onClick,
+   onClickOutside = () => {},
    offset = [],
    ...passProp
 }) {
@@ -25,6 +26,22 @@ function Headless({
    const classes = cx('wrapper', {
       [className]: className,
    });
+
+   useEffect(() => {
+      function handleClickOutside(event) {
+         if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+            onClickOutside();
+         }
+      }
+
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+
+      return () => {
+         document.removeEventListener('mousedown', handleClickOutside);
+         document.removeEventListener('touchstart', handleClickOutside);
+      };
+   }, [wrapperRef]);
 
    return (
       <div ref={wrapperRef} className={classes} {...props}>
@@ -43,6 +60,7 @@ function Headless({
 
 Headless.propTypes = {
    children: PropTypes.node.isRequired,
+   onClickOutside: PropTypes.func,
 };
 
 export default memo(Headless);

@@ -10,7 +10,7 @@ import { MdOutlineClear } from 'react-icons/md';
 import { IoSearchOutline } from 'react-icons/io5';
 import Headless from '~/components/Headless';
 import { useDebounce } from '~/hook';
-import { apiUrl } from '~/contexts/constants';
+import { apiUrl } from '~/config/constants';
 
 const cx = classNames.bind(styles);
 

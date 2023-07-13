@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
-import { apiUrl } from '~/contexts/constants';
+import { apiUrl } from '~/config/constants';
 import styles from './Search.module.scss';
 import { ListProductSearch } from '~/components/ListProduct';
 

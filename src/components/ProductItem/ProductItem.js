@@ -17,11 +17,12 @@ const cx = classNames.bind(styles);
 function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
    const animationRef = useRef();
    const itemRef = useRef();
-   const click = useRef(false);
    const hoverOption = useRef(false);
    const itemWrapperRef = useRef();
    const optionRef = useRef();
+   const clickOptionRef = useRef(false);
 
+   // const [clickOption, setClickOption] = useState(false);
    const [showMenuOption, setShowMenuOption] = useState(false);
 
    let props = {
@@ -29,53 +30,29 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
       ...passProp,
    };
 
-   const checkNode = (parent, children) => {
-      let node = children.parentNode;
-      while (node !== null) {
-         if (node === parent) return true;
-         node = node.parentNode;
+   const handleMouseEnter = () => {
+      if (optionRef.current && !clickOptionRef.current) {
+         optionRef.current.style.display = 'block';
+         hoverOption.current = true;
       }
-      return false;
+   };
+
+   const handleMouseOut = () => {
+      console.log(clickOptionRef.current);
+      if (optionRef.current && !clickOptionRef.current) {
+         optionRef.current.style.display = 'none';
+         hoverOption.current = false;
+      }
    };
 
    useEffect(() => {
-      document.addEventListener('click', (e) => {
-         if (optionRef.current) {
-            if (checkNode(optionRef.current, e.target) && !click.current) {
-               optionRef.current.style.display = 'block';
-               click.current = true;
-               hoverOption.current = true;
-            } else if (checkNode(optionRef.current, e.target) && click.current === true) {
-               click.current = false;
-               if (!hoverOption.current) {
-                  optionRef.current.style.display = 'none';
-               }
-               setShowMenuOption(false);
-            } else if (!checkNode(optionRef.current, e.target) && click.current === true) {
-               optionRef.current.style.display = 'none';
-               click.current = false;
-               setShowMenuOption(false);
-            }
-         }
-      });
+      itemWrapperRef.current.addEventListener('mousemove', handleMouseEnter);
+
+      itemWrapperRef.current.addEventListener('mouseleave', handleMouseOut);
    }, []);
 
    useEffect(() => {
       let start = false;
-
-      itemWrapperRef.current.addEventListener('mousemove', (e) => {
-         if (!click.current) {
-            optionRef.current.style.display = 'block';
-            hoverOption.current = true;
-         }
-      });
-
-      itemWrapperRef.current.addEventListener('mouseout', (e) => {
-         if (!click.current) {
-            optionRef.current.style.display = 'none';
-            hoverOption.current = false;
-         }
-      });
 
       document.addEventListener('mouseup', (e) => {
          if (start) {
@@ -126,7 +103,7 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
             start = true;
          }
       });
-   });
+   }, []);
 
    const renderOptionItem = (
       items = [
@@ -193,6 +170,12 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
                visible={showMenuOption}
                offset={[31, 159]}
                className={cx('option-menu')}
+               onClickOutside={() => {
+                  clickOptionRef.current = false;
+
+                  optionRef.current.style.display = 'none';
+                  setShowMenuOption(false);
+               }}
                render={() => (
                   <PopperWrapper className={cx('option-menu')}>{renderOptionItem()}</PopperWrapper>
                )}
@@ -202,6 +185,7 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
                   transparent
                   backgroundColor="rgba(255, 255, 255, 0.94)"
                   onClick={() => {
+                     clickOptionRef.current = true;
                      setShowMenuOption((prev) => !prev);
                   }}
                >

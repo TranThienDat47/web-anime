@@ -16,7 +16,7 @@
    --default-layout-width: 1150px;
    // --font-family: 'ProximaNova', sans-serif;
 
-   --width-default-sidebar: 74px;
+   --width-default-sidebar: 73px;
    --width-navbar-default: 240px;
    --search-btn-width: 54px;
    --search-height: 40px;
@@ -71,14 +71,14 @@ body {
    background-color: var(--primary-second);
 }
 
-body.scroll_lock {
-   overflow-y: scroll !important;
-   position: fixed;
-   top: 0px;
-   left: 0px;
-   right: 0px;
-   bottom: 0px;
-}
+// body.scroll_lock {
+//    overflow-y: scroll !important;
+//    position: fixed;
+//    top: 0px;
+//    left: 0px;
+//    right: 0px;
+//    bottom: 0px;
+// }
 
 html *::-webkit-scrollbar {
    border-radius: 0;

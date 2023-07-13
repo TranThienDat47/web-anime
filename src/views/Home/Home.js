@@ -25,10 +25,12 @@ function Home() {
 
    const [newResult, setNewResult] = useState(Array(12).fill(0));
 
+   const wrapperRef = useRef();
+
    const handleScroll = useCallback(() => {
       if (
-         Math.floor(window.innerHeight + document.documentElement.scrollTop) >=
-         document.documentElement.offsetHeight - 1
+         Math.floor(wrapperRef.current.offsetHeight + wrapperRef.current.scrollTop) >=
+         wrapperRef.current.scrollHeight - 1
       ) {
          beforeLoadHomeSuggested();
       }
@@ -45,8 +47,7 @@ function Home() {
    }, [loadingMore, hasMore]);
 
    useEffect(() => {
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      wrapperRef.current.onscroll = handleScroll;
    }, []);
 
    useEffect(() => {
@@ -56,7 +57,7 @@ function Home() {
    }, [newProducts]);
 
    return (
-      <div className={cx('wrapper')}>
+      <div ref={wrapperRef} className={cx('wrapper')}>
          <div className={cx('inner')}>
             <div className={cx('wrapper-product new')}>
                <div className={cx('header')}>
