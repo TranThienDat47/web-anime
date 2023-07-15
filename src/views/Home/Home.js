@@ -32,12 +32,14 @@ function Home() {
          Math.floor(wrapperRef.current.offsetHeight + wrapperRef.current.scrollTop) >=
          wrapperRef.current.scrollHeight - 1
       ) {
-         beforeLoadHomeSuggested();
+         if (hasMore) beforeLoadHomeSuggested();
       }
-   }, []);
+   }, [hasMore]);
 
    useEffect(() => {
       loadNewHome();
+
+      if (pageSuggestedProducts === -1) beforeLoadHomeSuggested();
    }, []);
 
    useEffect(() => {
@@ -48,7 +50,7 @@ function Home() {
 
    useEffect(() => {
       wrapperRef.current.onscroll = handleScroll;
-   }, []);
+   }, [hasMore]);
 
    useEffect(() => {
       if (newProducts?.length === 0) {
@@ -59,16 +61,17 @@ function Home() {
    return (
       <div ref={wrapperRef} className={cx('wrapper')}>
          <div className={cx('inner')}>
-            <div className={cx('wrapper-product new')}>
+            <div className={cx('wrapper_of_block', 'wrapper-product', 'new')}>
                <div className={cx('header')}>
                   <span className={cx('title')}>Mới</span>
                </div>
 
                <ListProductHome data={newResult} />
 
-               <div className={cx('sperator')}></div>
+               {/* <div className={cx('sperator')}></div> */}
             </div>
-            <div className={cx('recommend-products')}>
+
+            <div className={cx('wrapper_of_block', 'wrapper-product', 'recommend-products')}>
                <div className={cx('header')}>
                   <span className={cx('title')}>Đề xuất</span>
                </div>
@@ -77,7 +80,11 @@ function Home() {
                   data={suggestedProducts.length > 0 ? suggestedProducts : Array(10).fill(0)}
                />
             </div>
-            {loadingMore || <div className={cx('loading-more')}>Loading more...</div>}
+            {loadingMore ? (
+               <div className={cx('loading-more')}>Loading more...</div>
+            ) : (
+               <div className={cx('last-height')}></div>
+            )}
          </div>
       </div>
    );

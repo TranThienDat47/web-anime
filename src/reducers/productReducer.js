@@ -4,9 +4,9 @@ export const initialState = {
    suggestedProducts: [],
    pageSuggestedProducts: -1,
    loading: false,
-   loadingMore: true,
+   loadingMore: false,
    error: null,
-   hasMore: true,
+   hasMore: false,
 };
 
 export const productReducer = (state, action) => {
@@ -51,6 +51,7 @@ export const productReducer = (state, action) => {
          return {
             ...state,
             loadingMore: true,
+            hasMore: true,
          };
       case 'FETCH_SUGGESTED_PRODUCTS_SUCCESS':
          return {

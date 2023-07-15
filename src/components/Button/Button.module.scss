@@ -8,7 +8,7 @@
    min-width: 100px;
    padding: 9px 16px;
    line-height: 22px;
-   border-radius: 9px;
+   border-radius: 13px;
    cursor: pointer;
    background-color: var(--white);
    border: 1px solid transparent;
@@ -65,13 +65,25 @@
 }
 
 .primary {
-   background-color: var(--primary-second);
+   background-color: var(--btn-submit);
    color: var(--white);
    border-color: var(--primary-second);
 
    &:hover {
       border-color: var(--primary-second);
       background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), var(--btn-submit);
+   }
+}
+
+.grey {
+   background-color: var(--grey-btn);
+   color: var(--black);
+   border-color: var(--primary-second);
+
+   &:hover {
+      border-color: var(--primary-second);
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)),
+         var(--grey-btn-hover);
    }
 }
 

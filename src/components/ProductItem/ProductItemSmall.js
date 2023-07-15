@@ -47,7 +47,7 @@ function ProductItemSmall({
             <div className={cx('info-wrapper')}>
                <div className={cx('info')}>
                   <h4 className={cx('name')}>
-                     <div>{data.name}</div>
+                     <div>{data._name}</div>
                   </h4>
                   {!small || <div className={cx('productname')}>{data.anotherName}</div>}
                   {small || (

@@ -46,7 +46,7 @@ function Search() {
       } else {
          const loadUser = async () => {
             const response = await axios.get(
-               `${apiUrl}/products/search?mode=less&key=${searchValueDebound}&page=1`,
+               `${apiUrl}/products/search?skip=0&limit=10&key=${searchValueDebound}&recently=true`,
             );
             setSearchResult(response.data.products);
          };

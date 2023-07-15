@@ -118,7 +118,13 @@ const HeaderSidebar = forwardRef((prop, ref) => {
             </div>
             <div className={cx('item')}></div>
          </div>
-         <div className={cx('pseudo')} ref={pseudoRef} onClick={handleHideNav}></div>
+         <div
+            className={cx('pseudo')}
+            ref={pseudoRef}
+            onClick={() => {
+               setShowNav((prev) => !prev);
+            }}
+         ></div>
       </>
    );
 });

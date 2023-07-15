@@ -7,6 +7,29 @@
    height: 100%;
    z-index: 10;
 
+   &::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: -15px;
+      clip-path: polygon(
+         0 100%,
+         0 0,
+         100% 0,
+         76% 6%,
+         59% 13%,
+         47% 19%,
+         38% 25%,
+         28% 34%,
+         21% 43%,
+         15% 53%,
+         11% 63%,
+         6% 78%
+      );
+      width: 16px;
+      height: 16px;
+      background: var(--white);
+   }
    .button {
       width: 100%;
       height: calc(var(--width-default-sidebar) - 6px);

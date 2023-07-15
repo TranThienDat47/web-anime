@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import Button from '~/components/Button';
 import styles from './Product.module.scss';
 
 const cx = classNames.bind(styles);
@@ -7,12 +8,13 @@ const Product = () => {
    return (
       <div className={cx('wrapper')}>
          <div className={cx('inner')}>
-            <div className={cx('top')}>
+            <div className={cx('wrapper_of_block', 'top')}>
                <div className={cx('top__background')}>
                   <img
                      src="https://i.ytimg.com/vi/NYH7a2rB9P8/maxresdefault.jpg"
                      alt="Thieu nien ca hanh"
                   />
+                  <div className={cx('background_modal')}></div>
                </div>
 
                <div className={cx('top__introduce')}>
@@ -22,15 +24,47 @@ const Product = () => {
                         alt="Ko co gi"
                      />
                   </div>
-                  <div className={cx('top__name')}>Thieu Nien Ca Hanh</div>
-                  <div className={cx('top__another-name')}>Thieu nien ca hanh</div>
-                  <div className={cx('categories')}>Hoat hinh trung quoc</div>
-                  <div className={cx('count-date')}>10-01-2002</div>
-                  <div className={cx('count-episode')}>124/124</div>
-                  <div className={cx('count-views')}>123N lượt xem</div>
+                  <div className={cx('top__details')}>
+                     <div className={cx('top__name')}>Thiếu niên ca hành (Phần 2)</div>
+                     <div className={cx('top__another-name')}>
+                        Thiếu niên bạch mã túy xuân phong
+                     </div>
+
+                     <div className={cx('top__details-inf')}>
+                        <div className={cx('top__details-inf__content')}>
+                           <div className={cx('count-date')}>
+                              <span>Ngày ra mắt:</span> <strong>10-01-2002</strong>
+                           </div>
+                           <div className={cx('count-episode')}>
+                              <span>Số tập:</span> <strong> 124/124</strong>
+                           </div>
+                           <div className={cx('count-views')}>
+                              <span>Lượt xem:</span> <strong> 123N</strong>
+                           </div>
+                        </div>
+                        <div className={cx('others-controls')}>
+                           <Button primary className={cx('btn_follow')}>
+                              Xem phim
+                           </Button>
+                           <Button grey className={cx('btn_follow')}>
+                              Xem sau
+                           </Button>
+                           <Button grey className={cx('btn_watching')}>
+                              Theo dõi
+                           </Button>
+                        </div>
+                     </div>
+
+                     <div className={cx('categories')}>
+                        <div>Thể loại:</div>
+                        <a href="#">Hoạt hình trung quốc</a>
+                        <a href="#">Cổ trang</a>
+                        <a href="#">Trùng sinh</a>
+                     </div>
+                  </div>
                </div>
             </div>
-            <div className={cx('container')}>
+            <div className={cx('wrapper_of_block', 'container')}>
                <div className={cx('detaill')}>
                   <div className={cx('categories')}>
                      "Hoạt hình trung quốc", "Viễn tưởng", "Cổ trang"

@@ -140,7 +140,6 @@ function Header() {
                <AiOutlineMenu
                   className={cx('nav-icon')}
                   onClick={(e) => {
-                     e.preventDefault();
                      childRef.current.showAndHide();
                   }}
                />

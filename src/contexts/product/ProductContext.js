@@ -20,7 +20,7 @@ const ProductContextProvider = ({ children }) => {
       );
 
       if (response.data.success) {
-         if (response.data.products.length === 12) {
+         if (response.data.products.length >= 12) {
             dispatch({
                type: 'FETCH_SUGGESTED_PRODUCTS_SUCCESS',
                payload: {
@@ -29,7 +29,7 @@ const ProductContextProvider = ({ children }) => {
                   pageSuggestedProducts: page,
                },
             });
-         } else if (response.data.products.length > 0) {
+         } else if (response.data.products.length > 0 && response.data.products.length < 12) {
             dispatch({
                type: 'FETCH_SUGGESTED_PRODUCTS_SUCCESS',
                payload: {
@@ -38,7 +38,7 @@ const ProductContextProvider = ({ children }) => {
                   pageSuggestedProducts: page,
                },
             });
-         } else
+         } else if (response.data.products.length < 0) {
             dispatch({
                type: 'FETCH_SUGGESTED_PRODUCTS_SUCCESS',
                payload: {
@@ -47,6 +47,12 @@ const ProductContextProvider = ({ children }) => {
                   pageSuggestedProducts: page - 1,
                },
             });
+         }
+      } else {
+         dispatch({
+            type: 'FETCH_SUGGESTED_PRODUCTS_FAILURE',
+            payload: { error: null },
+         });
       }
    };
 

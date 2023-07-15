@@ -22,7 +22,6 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
    const optionRef = useRef();
    const clickOptionRef = useRef(false);
 
-   // const [clickOption, setClickOption] = useState(false);
    const [showMenuOption, setShowMenuOption] = useState(false);
 
    let props = {
@@ -38,7 +37,6 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
    };
 
    const handleMouseOut = () => {
-      console.log(clickOptionRef.current);
       if (optionRef.current && !clickOptionRef.current) {
          optionRef.current.style.display = 'none';
          hoverOption.current = false;
@@ -55,20 +53,23 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
       let start = false;
 
       document.addEventListener('mouseup', (e) => {
-         if (start) {
+         if (start && animationRef.current) {
             animationRef.current.style.transition = 'all 0.3s cubic-bezier(0.75, 1, 0.25, 0)';
             animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
             animationRef.current.style.backgroundColor = 'transparent';
             const temp = setTimeout(() => {
-               animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
                clearTimeout(temp);
             }, 40);
             const temp1 = setTimeout(() => {
-               animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.2)';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.2)';
                clearTimeout(temp1);
             }, 80);
             const temp2 = setTimeout(() => {
-               animationRef.current.style.border = '1px solid transparent';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid transparent';
                clearTimeout(temp2);
             }, 120);
             start = false;
@@ -76,20 +77,23 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
       });
 
       itemRef.current.addEventListener('dragend', (e) => {
-         if (start) {
+         if (start && animationRef.current) {
             animationRef.current.style.transition = 'all 0.3s cubic-bezier(0.75, 1, 0.25, 0)';
             animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
             animationRef.current.style.backgroundColor = 'transparent';
             const temp = setTimeout(() => {
-               animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.6)';
                clearTimeout(temp);
             }, 40);
             const temp1 = setTimeout(() => {
-               animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.2)';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid rgba(22, 24, 35, 0.2)';
                clearTimeout(temp1);
             }, 80);
             const temp2 = setTimeout(() => {
-               animationRef.current.style.border = '1px solid transparent';
+               if (animationRef.current)
+                  animationRef.current.style.border = '1px solid transparent';
                clearTimeout(temp2);
             }, 120);
             start = false;
@@ -144,7 +148,7 @@ function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
             <div className={cx('info-wrapper')}>
                <div className={cx('info')}>
                   <h4 className={cx('name')}>
-                     <div>{data.name}</div>
+                     <div>{data._name}</div>
                   </h4>
                   <div className={cx('productname')}>{data.anotherName}</div>
                   {!extraLarge ? (

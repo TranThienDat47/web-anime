@@ -49,8 +49,13 @@
 
 .logo-link {
    display: flex;
-   width: 20px;
-   height: 20px;
-   margin-left: 12px;
-   user-select: none;
+   align-items: center;
+   height: 100%;
+
+   & > img {
+      display: flex;
+      height: 20px;
+      margin-left: 12px;
+      user-select: none;
+   }
 }

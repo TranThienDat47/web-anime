@@ -3,6 +3,8 @@
 :root {
    --primary: #fff;
    --primary-second: rgb(239 243 246);
+   --grey-btn: #bfc2c373;
+   --grey-btn-hover: #bfc2c373;
    --black: #000;
    --text-color: #272e34;
    --text-bland: rgba(23, 26, 39, 0.63);
@@ -58,6 +60,7 @@
 
 html {
    font-size: 62.5%;
+   overflow: hidden;
 }
 
 body {
@@ -67,18 +70,8 @@ body {
    text-rendering: optimizeSpeed;
    color: var(--text-color);
    margin: 0;
-   overflow-y: auto;
    background-color: var(--primary-second);
 }
-
-// body.scroll_lock {
-//    overflow-y: scroll !important;
-//    position: fixed;
-//    top: 0px;
-//    left: 0px;
-//    right: 0px;
-//    bottom: 0px;
-// }
 
 html *::-webkit-scrollbar {
    border-radius: 0;
@@ -177,4 +170,8 @@ a {
 
 li {
    list-style: none;
+}
+
+.wrapper_of_block {
+   box-shadow: 0 1px 3px 0.5px var(--box-shadow-color);
 }

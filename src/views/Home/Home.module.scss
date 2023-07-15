@@ -15,14 +15,20 @@
 }
 
 .wrapper-product {
+   margin-top: 16px;
+
+   border-radius: 9px;
+
    display: flex;
    flex-direction: column;
    -webkit-user-drag: none;
    user-select: none;
+
+   background-color: var(--white-color);
 }
 
 .header {
-   padding: 13px 0 19px 6px;
+   padding: 13px 0 19px 19px;
 }
 
 .title {
@@ -45,4 +51,8 @@
    height: 100px;
    background-color: red;
    float: left;
+}
+
+.last-height {
+   border: 16px solid transparent;
 }
