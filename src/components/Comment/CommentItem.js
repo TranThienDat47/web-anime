@@ -17,12 +17,12 @@ function CommentItem({
    const [time, setTime] = useState(0);
    const timeRef = useRef(0);
 
-   console.log('chileged comment');
-
    useEffect(() => {
+      timeRef.current = validateTime(data.createdAt).realValue;
+
       const curInterVal = setInterval(() => {
-         setTime((prev) => prev + 1);
-      }, 60000);
+         setTime((prev) => -prev);
+      }, timeRef.current);
 
       return () => {
          clearInterval(curInterVal);

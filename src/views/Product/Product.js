@@ -33,8 +33,6 @@ const Product = () => {
                },
             });
 
-            console.log(response);
-
             var newComments = [];
 
             response.data.comments.forEach((element) => {
@@ -58,8 +56,6 @@ const Product = () => {
          socket.disconnect();
       };
    }, [socket, comments]);
-
-   console.log('parent comment');
 
    const handleComment = useCallback(
       (text) => {
