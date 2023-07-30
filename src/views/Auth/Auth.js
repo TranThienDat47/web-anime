@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import classNames from 'classnames/bind';
 import axios from 'axios';
 
@@ -9,6 +8,7 @@ import LoginForm from '~/views/Auth/components/LoginForm';
 import { AuthContext } from '~/contexts/auth';
 
 import styles from './Auth.module.scss';
+import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);
 

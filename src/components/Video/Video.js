@@ -1,3 +1,5 @@
+import ReactHlsPlayer from 'react-hls-player';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames/bind';
@@ -547,7 +549,10 @@ const Watch = () => {
 
    useEffect(() => {
       videoRef.current.ontimeupdate = () => {
-         timeCurrentRef.current.innerHTML = `${convertTime(videoRef.current.currentTime)}`;
+         if (videoRef.current.currentTime)
+            timeCurrentRef.current.innerHTML = `${convertTime(videoRef.current.currentTime)}`;
+
+         if (!videoRef.current.paused) setPlay(1);
       };
 
       // const loadUser = async () => {
@@ -804,6 +809,8 @@ const Watch = () => {
       };
 
       videoRef.current.onprogress = () => {
+         console.log(videoRef.current.buffered.end(0), videoRef.current.buffered.start(0));
+
          if (videoRef.current.buffered.length > tempBufferedRef.current) {
             if (
                videoRef.current.buffered.end(tempBufferedRef.current) <
@@ -849,7 +856,14 @@ const Watch = () => {
    return (
       <div ref={watchRef} className={cx('wrapper')}>
          <div ref={wrapperVideoRef} className={cx('watch')}>
-            <video ref={videoRef} src={videoSrc}></video>
+            <ReactHlsPlayer
+               src="https://hdbo.opstream5.com/20230114/29208_78fa67d5/index.m3u8"
+               autoPlay={true}
+               controls={false}
+               width="100%"
+               height="auto"
+               playerRef={videoRef}
+            />
             <div ref={modalPreviewRef} className={cx('modal-previews')}></div>
             <div ref={watchControlRef} className={cx('watch-controls')}>
                <div ref={progressRefRef} className={cx('progress')}>

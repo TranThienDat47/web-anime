@@ -1,7 +1,5 @@
-import Alert from 'react-bootstrap/Alert';
-
 function AlertMessage({ info }) {
-   return info === null ? null : <Alert variant={info.type}>{info.message}</Alert>;
+   return info === null ? null : <></>;
 }
 
 export default AlertMessage;

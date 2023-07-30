@@ -61,29 +61,26 @@ function Home() {
    return (
       <div ref={wrapperRef} className={cx('wrapper')}>
          <div className={cx('inner')}>
+            <div className={cx('heading_of_block')}>
+               <span className={cx('title')}>Mới</span>
+            </div>
             <div className={cx('wrapper_of_block', 'wrapper-product', 'new')}>
-               <div className={cx('header')}>
-                  <span className={cx('title')}>Mới</span>
-               </div>
-
                <ListProductHome data={newResult} />
-
-               {/* <div className={cx('sperator')}></div> */}
             </div>
 
+            <div className={cx('heading_of_block')}>
+               <span className={cx('title')}>Đề xuất</span>
+            </div>
             <div className={cx('wrapper_of_block', 'wrapper-product', 'recommend-products')}>
-               <div className={cx('header')}>
-                  <span className={cx('title')}>Đề xuất</span>
-               </div>
-
                <ListProductHome
                   data={suggestedProducts.length > 0 ? suggestedProducts : Array(10).fill(0)}
                />
             </div>
+
             {loadingMore ? (
                <div className={cx('loading-more')}>Loading more...</div>
             ) : (
-               <div className={cx('last-height')}></div>
+               <div className={cx('footer_pseudo')}></div>
             )}
          </div>
       </div>

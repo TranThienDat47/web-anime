@@ -11,12 +11,17 @@ const cx = classNames.bind(styles);
 const HeaderSidebar = forwardRef((prop, ref) => {
    const navRef = useRef();
    const pseudoRef = useRef();
-   let drag = useRef(false);
-   let clientX_temp = 0,
-      right,
-      width;
+   const moveNavRef = useRef(false);
+   const drag = useRef(false);
+   // let clientX_temp = 0,
+   //    right,
+   //    width;
 
    const [showNav, setShowNav] = useState(false);
+
+   const withTempRef = useRef(0);
+   const rightRef = useRef(0);
+   const widthRef = useRef(0);
 
    const handleMouseDownNav = (e) => {
       if (e.which === 1) {
@@ -24,45 +29,56 @@ const HeaderSidebar = forwardRef((prop, ref) => {
          if (pseudoRef.current.style.display === 'none' || !pseudoRef.current.style.display) {
             pseudoRef.current.style.opacity = 0;
          }
-         pseudoRef.current.style.display = 'block';
 
-         const clientX = e.clientX;
-         right = navRef.current.getBoundingClientRect().right;
-         width = navRef.current.getBoundingClientRect().width;
-         clientX_temp = right - clientX;
+         rightRef.current = navRef.current.getBoundingClientRect().right;
+         widthRef.current = navRef.current.getBoundingClientRect().width;
+         withTempRef.current = rightRef.current - e.clientX;
       }
    };
 
    const handleMouseMoveNav = (e) => {
       if (drag.current && e.which === 1) {
-         navRef.current.style.transition = '';
-         const clientX = e.clientX;
-         let x = clientX + clientX_temp - width;
-         let y = (clientX + clientX_temp) / 240;
+         if (!moveNavRef.current) {
+            pseudoRef.current.style.display = 'block';
+            navRef.current.style.transition = 'none';
+            moveNavRef.current = true;
+         }
 
-         if (x < -240) navRef.current.style.left = -240 + 'px';
-         else if (x > 0) navRef.current.style.left = 0 + 'px';
-         else navRef.current.style.left = x + 'px';
+         if (e.clientX + withTempRef.current - widthRef.current < -240)
+            navRef.current.style.left = -240 + 'px';
+         else if (e.clientX + withTempRef.current - widthRef.current > 0)
+            navRef.current.style.left = 0 + 'px';
+         else {
+            navRef.current.style.left = e.clientX + withTempRef.current - widthRef.current + 'px';
 
-         if (y * 0.4 <= 0.4) pseudoRef.current.style.opacity = y * 0.4;
-         else pseudoRef.current.style.opacity = 0.4;
+            pseudoRef.current.style.opacity = ((e.clientX + withTempRef.current) / 240) * 0.4;
+         }
       }
    };
 
    const handleMouseUpNav = (e) => {
-      if (drag.current && e.which === 1) {
+      if (drag.current && moveNavRef.current && e.which === 1) {
          drag.current = false;
          const right = navRef.current.getBoundingClientRect().right;
-
-         if (right >= (width * 1) / 2) {
+         if (right >= (widthRef.current * 1) / 2) {
             navRef.current.style.left = 0 + 'px';
             navRef.current.style.transition = '0.15s cubic-bezier(0.25, 0.55, 0, 0)';
-         } else if (right < (width * 1) / 2) {
+            moveNavRef.current = false;
+
+            setShowNav(true);
+         } else if (right < (widthRef.current * 1) / 2) {
             navRef.current.style.transition = '0.2s cubic-bezier(0, 0, 0, 1)';
             navRef.current.style.left = -240 + 'px';
-            pseudoRef.current.style.display = 'none';
+            moveNavRef.current = false;
+
+            if (showNav) setShowNav(false);
+            else {
+               handleHideNav();
+            }
          }
       }
+
+      moveNavRef.current = false;
    };
 
    useEffect(() => {
@@ -76,7 +92,7 @@ const HeaderSidebar = forwardRef((prop, ref) => {
          document.removeEventListener('mousemove', handleMouseMoveNav);
          document.removeEventListener('mouseup', handleMouseUpNav);
       };
-   });
+   }, [moveNavRef.current]);
 
    const handleShowNav = () => {
       navRef.current.style.left = 0 + 'px';

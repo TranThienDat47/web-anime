@@ -27,7 +27,7 @@ const AuthContextProvider = ({ children }) => {
                type: 'SET_AUTH',
                payload: { isAuthenticated: true, isVerify: false, user: response.user },
             });
-         } else if (!response.success && !response.isverify) {
+         } else if (!response.success) {
             dispatch({
                type: 'SET_AUTH',
                payload: { isAuthenticated: false, user: null },

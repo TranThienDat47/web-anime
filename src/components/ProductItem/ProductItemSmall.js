@@ -12,7 +12,7 @@ import Button from '~/components/Button';
 const cx = classNames.bind(styles);
 
 function ProductItemSmall({
-   data,
+   data = { _id: '', img: '', _name: '', anotherName: '', view: '', episodes: '' },
    onClick,
    small = false,
    medium = true,
@@ -34,7 +34,7 @@ function ProductItemSmall({
 
    return (
       <div className={cx('item-wrapper', { small, medium, active, hover })}>
-         <Link to={`/product?id=${data._id}`} ref={itemRef} className={classes} {...props}>
+         <Link to={`/product?id=${data._id || ''}`} ref={itemRef} className={classes} {...props}>
             <img
                className={cx('avatar')}
                alt="ok"

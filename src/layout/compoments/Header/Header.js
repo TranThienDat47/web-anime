@@ -160,6 +160,7 @@ function Header() {
                            transparent
                            className={cx('header__icon', 'notification', 'tooltip')}
                            name-tooltip="Thông báo"
+                           hover
                            onClick={() => {
                               setShowNotification((prev) => !prev);
                            }}

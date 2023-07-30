@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import Spinner from 'react-bootstrap/esm/Spinner';
 
 import { AuthContext } from '~/contexts/auth/AuthContext';
 
@@ -11,8 +10,8 @@ const ProtectedRoute = ({ curPath }) => {
 
    if (authLoading)
       return (
-         <div className="spinner-container">
-            <Spinner animation="border" variant="info" />
+         <div>
+            <></>
          </div>
       );
    return isAuthenticated && isVerify ? <Outlet /> : <Navigate to="/login" />;

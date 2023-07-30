@@ -25,7 +25,13 @@
    &.disable {
       opacity: 0.5;
       pointer-events: none;
+      background-color: var(--grey-btn-hover) !important;
+      color: var(--text-bland);
    }
+}
+
+.title::first-letter {
+   text-transform: capitalize !important;
 }
 
 .icon + .title,
@@ -48,7 +54,8 @@
    transition: 0.03s linear;
 
    &:hover {
-      box-shadow: 0px 0px 3px 0.5px var(--box-shadow-color);
+      box-shadow: 0px 0px 1px 0.3px var(--box-shadow-color);
+      background-color: var(--grey-btn-hover);
    }
 }
 
@@ -73,6 +80,10 @@
       border-color: var(--primary-second);
       background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), var(--btn-submit);
    }
+
+   &.transparent {
+      background-color: var(--btn-submit);
+   }
 }
 
 .grey {
@@ -89,15 +100,15 @@
 
 .transparent {
    background-color: transparent;
-   padding: 0;
+   padding: 3px;
    min-width: 0;
    border-radius: 999px;
    display: flex;
 
    .title {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: inline-block;
+      text-align: center;
+      line-height: 0rem;
    }
 }
 

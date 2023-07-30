@@ -2,7 +2,8 @@
 
 :root {
    --primary: #fff;
-   --primary-second: rgb(239 243 246);
+   // --primary-second: rgb(239 243 246);
+   --primary-second: #c6cacd;
    --grey-btn: #bfc2c373;
    --grey-btn-hover: #bfc2c373;
    --black: #000;
@@ -13,6 +14,7 @@
    --box-shadow-color: rgba(23, 26, 39, 0.26);
    --hover-item-color: rgba(23, 26, 39, 0.06);
    --took-tip-color: rgba(23, 26, 39, 0.59);
+   --aria-color: #c3c9cb30;
 
    --default-layout-header-height: 60px;
    --default-layout-width: 1150px;
@@ -66,7 +68,7 @@ html {
 body {
    font-family: 'ProximaNova', sans-serif;
    font-size: 1.6rem;
-   line-height: 1.5;
+   line-height: initial;
    text-rendering: optimizeSpeed;
    color: var(--text-color);
    margin: 0;
@@ -130,12 +132,6 @@ a {
    font-family: var(--font-family);
 }
 
-.spinner-container {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-}
-
 .tooltip {
    position: relative;
 
@@ -160,7 +156,7 @@ a {
       font-weight: 600;
       color: var(--white);
       border-radius: 6px;
-      background-color: var(--took-tip-color);
+      background-color: mix(rgba(0, 0, 0, 1), rgba(255, 255, 255, 0.6));
    }
 
    &:hover::after {
@@ -173,5 +169,70 @@ li {
 }
 
 .wrapper_of_block {
-   box-shadow: 0 1px 3px 0.5px var(--box-shadow-color);
+   // box-shadow: 0 0.9px 0.9px 0.2px var(--box-shadow-color);
+   background-color: var(--white);
+   padding: 16px;
+
+   border-radius: 19px;
+
+   .header-inner {
+      margin-bottom: 13px;
+   }
+}
+
+.heading_of_block {
+   margin: 26px 16px 9px 16px;
+
+   .title {
+      color: var(--text-color);
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0;
+      opacity: 0.9;
+   }
+}
+
+.footer_pseudo {
+   border: 9px solid transparent;
+   float: left;
+}
+
+.string-formatted {
+   white-space: normal;
+   line-height: normal;
+
+   &.strong {
+      font-weight: bold !important;
+   }
+
+   &.large {
+      font-size: 1.9rem;
+   }
+
+   &.small {
+      font-weight: 500;
+      font-size: 1.3rem;
+   }
+
+   &.very-small {
+      font-weight: 500;
+      font-size: 1.1rem;
+   }
+
+   &.blur {
+      color: var(--text-bland);
+   }
+}
+
+img {
+   &.avt {
+      object-fit: cover;
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+   }
+}
+
+.no-margin-top {
+   margin-top: 0 !important;
 }

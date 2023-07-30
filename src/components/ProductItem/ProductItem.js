@@ -14,7 +14,12 @@ import Headless from '../Headless';
 
 const cx = classNames.bind(styles);
 
-function ProductItem({ onClick, extraLarge = false, data, ...passProp }) {
+function ProductItem({
+   onClick,
+   extraLarge = false,
+   data = { _id: '', img: '', _name: '', anotherName: '', view: '', episodes: '' },
+   ...passProp
+}) {
    const animationRef = useRef();
    const itemRef = useRef();
    const hoverOption = useRef(false);

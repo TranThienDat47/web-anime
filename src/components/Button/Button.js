@@ -15,6 +15,7 @@ const Button = forwardRef(
          leftIcon,
          rightIcon,
          transparent = false,
+         normal = false,
          grey = false,
          primary = false,
          outline = false,
@@ -115,6 +116,7 @@ const Button = forwardRef(
          text,
          small,
          large,
+         normal,
          disable,
          rounded,
          transparent,
@@ -155,6 +157,7 @@ Button.propTypes = {
    text: PropTypes.bool,
    small: PropTypes.bool,
    large: PropTypes.bool,
+   normal: PropTypes.bool,
    children: PropTypes.node.isRequired,
    onClick: PropTypes.func,
 };

@@ -8,7 +8,9 @@ const cx = classNames.bind(styles);
 const Watch = () => {
    return (
       <div className={cx('wrapper')}>
-         <Video />
+         <div className={cx('inner')}>
+            <Video />
+         </div>
       </div>
    );
 };

@@ -12,30 +12,16 @@
    margin: auto;
    padding: 0 12px 0 16px;
    height: 100%;
-}
 
-.wrapper-product {
-   margin-top: 16px;
+   .wrapper-product {
+      border-radius: 9px;
 
-   border-radius: 9px;
-
-   display: flex;
-   flex-direction: column;
-   -webkit-user-drag: none;
-   user-select: none;
-
-   background-color: var(--white-color);
-}
-
-.header {
-   padding: 13px 0 19px 19px;
-}
-
-.title {
-   font-size: 1.8rem;
-   font-weight: 700;
-   margin: 0;
-   opacity: 0.9;
+      display: flex;
+      flex-direction: column;
+      -webkit-user-drag: none;
+      user-select: none;
+      padding: 9px 9px;
+   }
 }
 
 .sperator {
@@ -51,8 +37,4 @@
    height: 100px;
    background-color: red;
    float: left;
-}
-
-.last-height {
-   border: 16px solid transparent;
 }
