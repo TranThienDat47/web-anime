@@ -809,8 +809,6 @@ const Watch = () => {
       };
 
       videoRef.current.onprogress = () => {
-         console.log(videoRef.current.buffered.end(0), videoRef.current.buffered.start(0));
-
          if (videoRef.current.buffered.length > tempBufferedRef.current) {
             if (
                videoRef.current.buffered.end(tempBufferedRef.current) <
