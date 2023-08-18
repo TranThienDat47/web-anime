@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from 'react';
+import { useState, useEffect, useRef, memo, useContext, useCallback } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 
@@ -12,11 +12,14 @@ import styles from './Comment.module.scss';
 import { validateTime } from '~/utils/validated';
 import CommentLists from './CommentList';
 import CommentWrite from './CommentWrite';
+import { AuthContext } from '~/contexts/auth';
+
+import CommentServices from '~/services/CommentServices';
 
 const cx = classNames.bind(styles);
 
 function CommentItem({
-   data = { _name: '', img: '', content: '', likes: 0, replies: 0, createdAt: 'vừa xong' },
+   data = { _id: '', _name: '', img: '', content: '', likes: 0, replies: 0, createdAt: 'vừa xong' },
    modeReply = false,
    ...passProp
 }) {
@@ -25,11 +28,15 @@ function CommentItem({
       ...passProp,
    });
 
+   const {
+      authState: { user },
+   } = useContext(AuthContext);
+
    const socket = io('http://localhost:3001');
 
    const [showReplies, setShowReplies] = useState(false);
    const [showReplyWrite, setShowReplyWrite] = useState(false);
-   const [comments, setComments] = useState([]);
+   const [commentReplies, setCommentReplies] = useState([]);
 
    const [time, setTime] = useState(0);
    const timeRef = useRef(0);
@@ -42,21 +49,41 @@ function CommentItem({
       setShowReplyWrite(false);
    };
 
+   const handleComment = useCallback(
+      async (text) => {
+         await CommentServices.addComment({
+            parent_id: data._id,
+            user_id: user._id,
+            content: text || ' ',
+            isReply: true,
+         })
+            .then((response) => {
+               const comment =
+                  response.comments.comment_details[response.comments.comment_details.length - 1];
+
+               comment._name = user._name;
+               comment.img = user.img;
+
+               socket.emit('comment_reply', comment);
+
+               data.replies++;
+            })
+            .catch((error) => {});
+      },
+      [socket, commentReplies],
+   );
+
    const fetchComments = async () => {
       try {
-         const response = await axios.get('http://localhost:5000/api/comments', {
-            params: {
-               parentID: '648abc185aa4a2ca9704cb5e',
-            },
-         });
+         const response = await CommentServices.fetchComments({ parent_id: data._id });
 
          var newComments = [];
 
-         response.data.comments.forEach((element) => {
+         response.comments.forEach((element) => {
             newComments = [...newComments, element.comment_details];
          });
 
-         setComments(newComments);
+         setCommentReplies(newComments);
       } catch (error) {
          console.error(error);
       }
@@ -75,7 +102,7 @@ function CommentItem({
    }, [time]);
 
    useEffect(() => {
-      if (showReplies && comments.length <= 0) {
+      if (showReplies && commentReplies.length >= 0) {
          fetchComments();
       }
 
@@ -90,8 +117,20 @@ function CommentItem({
       btnReplyRef.current.onclick = () => {
          setShowReplyWrite(true);
          if (childRef.current) childRef.current.handleFocusTextAria();
+         setShowReplies(true);
       };
    }, []);
+
+   useEffect(() => {
+      socket.on('comment_reply', (comment) => {
+         setCommentReplies((prev) => [...prev, comment]);
+         setShowReplies(true);
+      });
+
+      return () => {
+         socket.disconnect();
+      };
+   }, [socket, data._id, commentReplies]);
 
    return (
       <div className={classes} {...passProp}>
@@ -142,6 +181,7 @@ function CommentItem({
                      ref={childRef}
                      modeReply
                      handleShowAndHideReplyWrite={handleShowAndHideReplyWrite}
+                     handleComment={handleComment}
                   ></CommentWrite>
                </div>
             )}
@@ -156,11 +196,11 @@ function CommentItem({
                         hover
                         transparent
                      >
-                        4 phản hồi
+                        {showReplies && 'ẩn'} {data.replies} phản hồi
                      </Button>
                   </div>
 
-                  {showReplies && <CommentLists comments={comments} modeReply />}
+                  {showReplies && <CommentLists comments={commentReplies} modeReply />}
                </div>
             )}
          </div>

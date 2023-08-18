@@ -38,6 +38,9 @@
    --ytd-rich-grid-item-margin: 16px;
    --ytd-rich-grid-item-max-width: 360px;
 
+   //loading more
+   --height-loading-more: 63px;
+
    //btn
    --btn-submit: #1a73e8;
    --btn-submit-hover: #1268da;
@@ -94,29 +97,29 @@ html *::-webkit-scrollbar-track {
 }
 
 // Fonts emmbeded
-@font-face {
-   font-family: ProximaNova;
-   src: url('/assets/fonts/Proxima-Nova-Regular.woff2');
-   font-weight: 400;
-}
+// @font-face {
+//    font-family: ProximaNova;
+//    src: url('/assets/fonts/Proxima-Nova-Regular.woff2');
+//    font-weight: 400;
+// }
 
-@font-face {
-   font-family: ProximaNova;
-   src: url('/assets/fonts/ProximaNova-Semibold.woff2');
-   font-weight: 600;
-}
+// @font-face {
+//    font-family: ProximaNova;
+//    src: url('/assets/fonts/ProximaNova-Semibold.woff2');
+//    font-weight: 600;
+// }
 
-@font-face {
-   font-family: ProximaNova;
-   src: url('/assets/fonts/Proxima-Nova-Bold.woff');
-   font-weight: 700;
-}
+// @font-face {
+//    font-family: ProximaNova;
+//    src: url('/assets/fonts/Proxima-Nova-Bold.woff');
+//    font-weight: 700;
+// }
 
-@font-face {
-   font-family: SofiaPro;
-   src: url('/assets/fonts/sofiapro-bold.woff');
-   font-weight: 700;
-}
+// @font-face {
+//    font-family: SofiaPro;
+//    src: url('/assets/fonts/sofiapro-bold.woff');
+//    font-weight: 700;
+// }
 
 button,
 input,
@@ -193,7 +196,19 @@ li {
 }
 
 .footer_pseudo {
+   position: absolute;
+   bottom: -23px;
    border: 9px solid transparent;
+   float: left;
+}
+
+.loading-more {
+   width: 100%;
+   height: var(--height-loading-more);
+   line-height: var(--height-loading-more);
+
+   background-color: var(--white);
+   text-align: center;
    float: left;
 }
 

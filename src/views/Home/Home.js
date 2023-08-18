@@ -1,62 +1,33 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import styles from './Home.module.scss';
 import { ListProductHome } from '~/components/ListProduct';
 import { ProductContext } from '~/contexts/product';
+import LazyLoading from '~/components/LazyLoading';
 
 const cx = classNames.bind(styles);
 
 function Home() {
    const {
-      productState: {
-         suggestedProducts,
-         pageSuggestedProducts,
-         newProducts,
-         hasMore,
-         loading,
-         loadingMore,
-         error,
-      },
+      productState: { suggestedProducts, pageSuggestedProducts, newProducts, hasMore, loadingMore },
       loadHomeSuggested,
       loadNewHome,
       beforeLoadHomeSuggested,
    } = useContext(ProductContext);
 
-   const [newResult, setNewResult] = useState(Array(12).fill(0));
-
+   const childRef = useRef(null);
    const wrapperRef = useRef();
-
-   const handleScroll = useCallback(() => {
-      if (
-         Math.floor(wrapperRef.current.offsetHeight + wrapperRef.current.scrollTop) >=
-         wrapperRef.current.scrollHeight - 1
-      ) {
-         if (hasMore) beforeLoadHomeSuggested();
-      }
-   }, [hasMore]);
 
    useEffect(() => {
       loadNewHome();
-
-      if (pageSuggestedProducts === -1) beforeLoadHomeSuggested();
    }, []);
 
    useEffect(() => {
-      if (!loadingMore || !hasMore) return;
-
-      loadHomeSuggested(pageSuggestedProducts + 1);
-   }, [loadingMore, hasMore]);
-
-   useEffect(() => {
-      wrapperRef.current.onscroll = handleScroll;
-   }, [hasMore]);
-
-   useEffect(() => {
-      if (newProducts?.length === 0) {
-         setNewResult(Array(12).fill(0));
-      } else setNewResult(newProducts);
-   }, [newProducts]);
+      wrapperRef.current.onscroll = () => {
+         childRef.current.handleScroll(wrapperRef.current);
+      };
+   }, []);
 
    return (
       <div ref={wrapperRef} className={cx('wrapper')}>
@@ -65,23 +36,26 @@ function Home() {
                <span className={cx('title')}>Mới</span>
             </div>
             <div className={cx('wrapper_of_block', 'wrapper-product', 'new')}>
-               <ListProductHome data={newResult} />
+               <ListProductHome data={newProducts.length > 0 ? newProducts : Array(12).fill(0)} />
             </div>
 
             <div className={cx('heading_of_block')}>
                <span className={cx('title')}>Đề xuất</span>
             </div>
             <div className={cx('wrapper_of_block', 'wrapper-product', 'recommend-products')}>
-               <ListProductHome
-                  data={suggestedProducts.length > 0 ? suggestedProducts : Array(10).fill(0)}
-               />
+               <LazyLoading
+                  ref={childRef}
+                  hasMore={hasMore}
+                  loadingMore={loadingMore}
+                  pageCurrent={pageSuggestedProducts}
+                  beforeLoad={beforeLoadHomeSuggested}
+                  loadProductMore={loadHomeSuggested}
+               >
+                  <ListProductHome
+                     data={suggestedProducts.length > 0 ? suggestedProducts : Array(12).fill(0)}
+                  />
+               </LazyLoading>
             </div>
-
-            {loadingMore ? (
-               <div className={cx('loading-more')}>Loading more...</div>
-            ) : (
-               <div className={cx('footer_pseudo')}></div>
-            )}
          </div>
       </div>
    );

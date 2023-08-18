@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import CommentItem from './CommentItem';
 
 function CommentLists({ comments = [], modeReply = false }) {
@@ -10,4 +11,4 @@ function CommentLists({ comments = [], modeReply = false }) {
    );
 }
 
-export default CommentLists;
+export default memo(CommentLists);

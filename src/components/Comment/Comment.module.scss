@@ -2,6 +2,11 @@
    --border-color-with-background-grey: rgba(22, 24, 35, 0.33);
 }
 
+.container {
+   position: relative;
+   margin-top: 13px;
+}
+
 .wrapper {
    color: var(--black);
    margin-bottom: 19px;
