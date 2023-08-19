@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { ListProductHome } from '~/components/ListProduct';
 import { ProductContext } from '~/contexts/product';
-import LazyLoading from '~/components/LazyLoading';
+import LazyLoading from '~/components/loading/LazyLoading';
 
 const cx = classNames.bind(styles);
 

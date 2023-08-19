@@ -10,7 +10,7 @@ import {
 } from 'react';
 import io from 'socket.io-client';
 import classNames from 'classnames/bind';
-import LazyLoading from '../LazyLoading';
+import LazyLoading from '../loading/LazyLoading';
 import styles from './Comment.module.scss';
 import { AuthContext } from '~/contexts/auth';
 import CommentServices from '~/services/CommentServices';
@@ -36,7 +36,6 @@ const Comment = forwardRef(({ parent_id = null }, ref) => {
    const childRef = useRef();
 
    const beforeLoadCommentSuggested = () => {
-      console.log('huhu');
       setLoadingMore(true);
       setHasMore(true);
    };
@@ -79,7 +78,7 @@ const Comment = forwardRef(({ parent_id = null }, ref) => {
       return () => {
          socket.disconnect();
       };
-   }, [socket, parent_id]);
+   }, [socket]);
 
    const handleComment = useCallback(
       async (text) => {

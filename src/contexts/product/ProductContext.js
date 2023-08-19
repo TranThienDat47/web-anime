@@ -40,7 +40,7 @@ const ProductContextProvider = ({ children }) => {
                   pageSuggestedProducts: page,
                }),
             );
-         } else if (response.products.length < 0) {
+         } else if (response.products.length <= 0) {
             dispatch(
                fetchSuggestedProductsSuccess({
                   suggestedProducts: response.products,

@@ -15,8 +15,11 @@ import CommentWrite from './CommentWrite';
 import { AuthContext } from '~/contexts/auth';
 
 import CommentServices from '~/services/CommentServices';
+import MoreLoading from '../loading/MoreLoading';
 
 const cx = classNames.bind(styles);
+
+const LENGTH_PAGE = 1;
 
 function CommentItem({
    data = { _id: '', _name: '', img: '', content: '', likes: 0, replies: 0, createdAt: 'vừa xong' },
@@ -38,12 +41,58 @@ function CommentItem({
    const [showReplyWrite, setShowReplyWrite] = useState(false);
    const [commentReplies, setCommentReplies] = useState([]);
 
+   //Loading more with show more
+
+   const [hasMore, setHasMore] = useState(false);
+   const [loadingMore, setLoadingMore] = useState(false);
+   const [suggestedComments, setSuggestedComments] = useState([]);
+   const [pageSuggestedComments, setPageSuggestedComments] = useState(-1);
+
    const [time, setTime] = useState(0);
    const timeRef = useRef(0);
    const btnReplyRef = useRef();
    const btnShowReplyRef = useRef();
 
    const childRef = useRef(null);
+
+   const beforeLoadCommentSuggested = () => {
+      setHasMore(true);
+      setLoadingMore(true);
+   };
+
+   const loadCommentSuggested = async (page) => {
+      const response = await CommentServices.fetchComments({
+         parent_id: data._id,
+         skip: page * LENGTH_PAGE,
+         limit: LENGTH_PAGE,
+      });
+
+      if (response.success) {
+         setSuggestedComments((prev) => [...response.comments, ...prev]);
+         setLoadingMore(false);
+
+         if (response.comments.length >= LENGTH_PAGE) {
+            setPageSuggestedComments(page);
+
+            const check = await CommentServices.fetchComments({
+               parent_id: data._id,
+               skip: (page + 1) * LENGTH_PAGE,
+               limit: LENGTH_PAGE,
+            });
+
+            if (check.success && check.comments.length > 0) setHasMore(true);
+            else setHasMore(false);
+         } else if (response.comments.length > 0 && response.comments.length < LENGTH_PAGE) {
+            setHasMore(false);
+            setPageSuggestedComments(page);
+         } else if (response.comments.length <= 0) {
+            setHasMore(false);
+            setPageSuggestedComments(page - 1);
+         }
+      } else {
+         console.log('nug');
+      }
+   };
 
    const handleShowAndHideReplyWrite = () => {
       setShowReplyWrite(false);
@@ -70,24 +119,8 @@ function CommentItem({
             })
             .catch((error) => {});
       },
-      [socket, commentReplies],
+      [socket, suggestedComments],
    );
-
-   const fetchComments = async () => {
-      try {
-         const response = await CommentServices.fetchComments({ parent_id: data._id });
-
-         var newComments = [];
-
-         response.comments.forEach((element) => {
-            newComments = [...newComments, element.comment_details];
-         });
-
-         setCommentReplies(newComments);
-      } catch (error) {
-         console.error(error);
-      }
-   };
 
    useEffect(() => {
       timeRef.current = validateTime(data.createdAt).realValue;
@@ -102,16 +135,12 @@ function CommentItem({
    }, [time]);
 
    useEffect(() => {
-      if (showReplies && commentReplies.length >= 0) {
-         fetchComments();
-      }
-
       if (btnShowReplyRef.current) {
          btnShowReplyRef.current.onclick = () => {
             setShowReplies((prev) => !prev);
          };
       }
-   }, [showReplies]);
+   }, [showReplies, btnShowReplyRef.current]);
 
    useEffect(() => {
       btnReplyRef.current.onclick = () => {
@@ -122,6 +151,10 @@ function CommentItem({
    }, []);
 
    useEffect(() => {
+      setCommentReplies(suggestedComments.map((element) => element.comment_details));
+   }, [suggestedComments]);
+
+   useEffect(() => {
       socket.on('comment_reply', (comment) => {
          setCommentReplies((prev) => [...prev, comment]);
          setShowReplies(true);
@@ -130,7 +163,7 @@ function CommentItem({
       return () => {
          socket.disconnect();
       };
-   }, [socket, data._id, commentReplies]);
+   }, [socket, data._id, suggestedComments]);
 
    return (
       <div className={classes} {...passProp}>
@@ -200,7 +233,17 @@ function CommentItem({
                      </Button>
                   </div>
 
-                  {showReplies && <CommentLists comments={commentReplies} modeReply />}
+                  {showReplies && (
+                     <MoreLoading
+                        hasMore={hasMore}
+                        loadingMore={loadingMore}
+                        pageCurrent={pageSuggestedComments}
+                        beforeLoad={beforeLoadCommentSuggested}
+                        loadProductMore={loadCommentSuggested}
+                     >
+                        <CommentLists comments={commentReplies} modeReply />
+                     </MoreLoading>
+                  )}
                </div>
             )}
          </div>
