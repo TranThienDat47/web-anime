@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
@@ -7,10 +7,22 @@ import Button from '~/components/Button';
 import styles from './Product.module.scss';
 import { ProductItem } from '~/components/ProductItem';
 import { Comment } from '~/components/Comment';
+import { GlobalContext } from '~/contexts/global';
+
+import imgs from '~/assets/img';
+
+import { converterDate, converterDateTitle, formattedEpisodes } from '~/utils/validated';
 
 const cx = classNames.bind(styles);
 
 const Product = () => {
+   const {
+      globalState: { productCurrent, loading },
+      setProductCurrent,
+   } = useContext(GlobalContext);
+
+   const [productCurrentState, setProductCurrentState] = useState({});
+
    const location = useLocation();
    const params = new URLSearchParams(location.search);
    const parent_id = params.get('id');
@@ -19,6 +31,36 @@ const Product = () => {
 
    const childRef = useRef(null);
    const wrapperRef = useRef(null);
+
+   useEffect(() => {
+      setProductCurrent({ _id: parent_id });
+   }, []);
+
+   useEffect(() => {
+      if (productCurrent.product) {
+         console.log(productCurrent.product);
+
+         let currentState = {};
+
+         currentState._name = productCurrent.product._name;
+         currentState.anotherName = productCurrent.product.anotherName;
+         currentState.description = productCurrent.product.description;
+         currentState.img = productCurrent.product.img;
+         currentState.episodes = productCurrent.product.episodes;
+         currentState.currentEpisodes = productCurrent.product.currentEpisodes;
+         currentState.view = productCurrent.product.view;
+         currentState.releaseDate = converterDate(productCurrent.product.releaseDate);
+         currentState.news = productCurrent.product.news;
+         currentState.reacts = productCurrent.product.reacts;
+         currentState.categories = productCurrent.product.reacts;
+         currentState.background = productCurrent.product.background;
+         currentState.country_Of_Origin = productCurrent.product.country_Of_Origin;
+         currentState.createdAt = productCurrent.product.createdAt;
+         currentState.categories = productCurrent.product.categories;
+
+         setProductCurrentState(currentState);
+      }
+   }, [productCurrent]);
 
    useEffect(() => {
       wrapperRef.current.onscroll = () => {
@@ -32,8 +74,18 @@ const Product = () => {
             <div className={cx('wrapper_of_block', 'top')}>
                <div className={cx('top__background')}>
                   <img
-                     src="https://i.ytimg.com/vi/NYH7a2rB9P8/maxresdefault.jpg"
-                     alt="Thieu nien ca hanh"
+                     src={
+                        loading
+                           ? imgs.noImage
+                           : productCurrentState.background
+                           ? productCurrentState.background
+                           : imgs.noImage
+                     }
+                     alt={productCurrentState._name}
+                     onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = imgs.noImage;
+                     }}
                   />
                   <div className={cx('background_modal')}></div>
                </div>
@@ -41,26 +93,66 @@ const Product = () => {
                <div className={cx('top__introduce')}>
                   <div className={cx('top__thumbnail')}>
                      <img
-                        src="https://hhtq.vip/wp-content/uploads/2021/09/thieu-nien-ca-hanh-phan-2-1-1.jpg"
+                        src={
+                           loading
+                              ? imgs.noImage
+                              : productCurrentState.img
+                              ? productCurrentState.img
+                              : imgs.noImage
+                        }
                         alt="Ko co gi"
+                        onError={(e) => {
+                           e.target.onerror = null;
+                           e.target.src = imgs.noImage;
+                        }}
                      />
                   </div>
                   <div className={cx('top__details')}>
-                     <div className={cx('top__name')}>Thiếu niên ca hành (Phần 2)</div>
-                     <div className={cx('top__another-name')}>
-                        Thiếu niên bạch mã túy xuân phong
+                     <div className={cx('top__name', 'content-empty w-200 h-29')}>
+                        {loading ? '' : productCurrentState._name}
+                     </div>
+                     <div className={cx('top__another-name', 'content-empty w-200 h-23')}>
+                        {loading ? '' : productCurrentState.anotherName}
                      </div>
 
                      <div className={cx('top__details-inf')}>
                         <div className={cx('top__details-inf__content')}>
-                           <div className={cx('count-date')}>
-                              <span>Ngày ra mắt:</span> <strong>10-01-2002</strong>
+                           <div className={cx('wrapper-count', 'count-date')}>
+                              <span>Ngày ra mắt:</span>
+                              <div
+                                 className={cx(
+                                    'content-empty w-100 h-20',
+                                    'string-formatted',
+                                    'strong',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.releaseDate}
+                              </div>
                            </div>
-                           <div className={cx('count-episode')}>
-                              <span>Số tập:</span> <strong> 124/124</strong>
+                           <div className={cx('wrapper-count', 'count-episode')}>
+                              <span>Số tập:</span>
+                              <div
+                                 className={cx(
+                                    'content-empty w-100 h-20',
+                                    'string-formatted',
+                                    'strong',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.currentEpisodes}/
+                                 {loading ? '' : productCurrentState.episodes}
+                              </div>
                            </div>
-                           <div className={cx('count-views')}>
-                              <span>Số người theo dõi:</span> <strong> 123N</strong>
+                           <div className={cx('wrapper-count', 'count-views')}>
+                              <span>Số người theo dõi:</span>
+                              <div
+                                 className={cx(
+                                    'content-empty w-100 h-20',
+                                    'string-formatted',
+                                    'strong',
+                                 )}
+                              >
+                                 123N
+                              </div>
                            </div>
                         </div>
                         <div className={cx('others-controls')}>
@@ -85,9 +177,12 @@ const Product = () => {
                            <span>Thể loại:</span>
                         </div>
                         <div className={cx('categories-list')}>
-                           <Link to="#">Hoạt hình trung quốc</Link>
-                           <Link to="#">Cổ trang</Link>
-                           <Link to="#">Trùng sinh</Link>
+                           {productCurrentState.categories &&
+                              productCurrentState.categories.map((element, index) => (
+                                 <Link to={'#'} key={element._id}>
+                                    {element.title}
+                                 </Link>
+                              ))}
                         </div>
                      </div>
                   </div>
@@ -101,47 +196,105 @@ const Product = () => {
                            <div className={cx('inf__header')}>
                               <span className={cx('string-formatted')}>132N lượt xem</span>
                               <span className={cx('string-formatted')}> - </span>
-                              <span className={cx('string-formatted')}>27 thg 10, 2020</span>
-                           </div>
-                           <div className={cx('description')}>
-                              <span className={cx('string-formatted strong')}>Nội dung phim:</span>
-                              <span className={cx('string-formatted')}> </span>
                               <span className={cx('string-formatted')}>
-                                 Sau khi Vong Ưu đại sư của Hàn Thủy Tự tọa hóa, một cỗ quan tài
-                                 vàng thần bí nhập thế, vén lên phân tranh trong giang hồ. Thế lực
-                                 các nơi đối chọi gay gắt, Lôi Vô Kiệt, Tiêu Sắt, Đường Liên, Tư
-                                 Không Thiên Lạc, Thiên Nữ Nhụy lần lượt rơi vào phân tranh. Sách mã
-                                 giang hồ mộng, ỷ kiếm đạp ca hành. Câu chuyện về bí mật của quan
-                                 tài vàng dần dần được hé mở…
+                                 {converterDateTitle(productCurrentState.createdAt)}
                               </span>
                            </div>
-                           <div className={cx('country')}>
-                              <span className={cx('string-formatted strong')}>Quốc gia:</span>
+                           <div className={cx('wrapper-count', 'description', 'mrg-b-3')}>
+                              <span className={cx('string-formatted strong flex-shink-0')}>
+                                 Nội dung phim:
+                              </span>
                               <span className={cx('string-formatted')}> </span>
-                              <span className={cx('string-formatted')}>Trung quốc</span>
-                           </div>
-                           <div className={cx('date')}>
-                              <span className={cx('string-formatted strong')}>Ngày phát hành:</span>
-                              <span className={cx('string-formatted')}> </span>
-                              <span className={cx('string-formatted')}>10-01-2002</span>
-                           </div>
-                           <div className={cx('status')}>
-                              <span className={cx('string-formatted strong')}>Trạng thái:</span>
-                              <span className={cx('string-formatted')}> </span>
-                              <span className={cx('string-formatted')}>Đã hoàn thành</span>
-                           </div>
-                           <div className={cx('episode')}>
-                              <span className={cx('string-formatted strong')}>Số tập:</span>
-                              <span className={cx('string-formatted')}> </span>
-                              <span className={cx('string-formatted')}>124/124</span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.description}
+                              </div>
                            </div>
 
-                           <div className={cx('categories')}>
+                           <div className={cx('wrapper-count', 'date', 'mrg-b-3')}>
+                              <span className={cx('string-formatted strong flex-shink-0')}>
+                                 Ngày phát hành:
+                              </span>
+                              <span className={cx('string-formatted')}> </span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.releaseDate}
+                              </div>
+                           </div>
+
+                           <div className={cx('wrapper-count', 'country', 'mrg-b-3')}>
+                              <span className={cx('string-formatted strong flex-shink-0')}>
+                                 Quốc gia:
+                              </span>
+                              <span className={cx('string-formatted')}> </span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.country_Of_Origin}
+                              </div>
+                           </div>
+
+                           <div className={cx('wrapper-count', 'status', 'mrg-b-3')}>
+                              <span className={cx('string-formatted strong flex-shink-0')}>
+                                 Trạng thái:
+                              </span>
+                              <span className={cx('string-formatted')}> </span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 Đã hoàn thành
+                              </div>
+                           </div>
+                           <div className={cx('wrapper-count', 'episode', 'mrg-b-3')}>
+                              <span className={cx('string-formatted strong flex-shink-0')}>
+                                 Số tập:
+                              </span>
+                              <span className={cx('string-formatted')}> </span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 {loading ? '' : productCurrentState.currentEpisodes}/
+                                 {loading ? '' : productCurrentState.episodes}
+                              </div>
+                           </div>
+
+                           <div className={cx('wrapper-count', 'categories')}>
                               <span className={cx('string-formatted strong')}>Thể loại:</span>
                               <span className={cx('string-formatted')}> </span>
-                              <span className={cx('string-formatted')}>
-                                 Hoạt hình trung quốc, Viễn tưởng, Cổ trang
-                              </span>
+                              <div
+                                 className={cx(
+                                    'string-formatted',
+                                    'content-empty w-100 h-20',
+                                    'text-align-justify',
+                                 )}
+                              >
+                                 {productCurrentState.categories &&
+                                    productCurrentState.categories.map((element, index) =>
+                                       index === 0 ? element.title : ', ' + element.title,
+                                    )}
+                              </div>
                            </div>
 
                            <div className={cx('trailer')}>
@@ -158,11 +311,22 @@ const Product = () => {
                         <span className={cx('string-formatted strong')}>Chọn tập</span>
                      </div>
                      <div className={cx('list-episodes')}>
-                        {listEpisodes.map((element, index) => (
-                           <Link to={'#'} key={index} className={cx('item-episodes')}>
-                              {index < 10 ? '0' + index : index}
-                           </Link>
-                        ))}
+                        {productCurrent.product_details &&
+                        productCurrent.product_details.length > 0 ? (
+                           formattedEpisodes(productCurrent.product_details).map(
+                              (element, index) => (
+                                 <Link
+                                    to={'#'}
+                                    key={element.episode}
+                                    className={cx('item-episodes')}
+                                 >
+                                    {element.episode}
+                                 </Link>
+                              ),
+                           )
+                        ) : (
+                           <div>Hiện chưa có tập phim nào</div>
+                        )}
                      </div>
                   </div>
 
@@ -174,7 +338,7 @@ const Product = () => {
                   </div>
                   <div className={cx('wrapper_of_block', 'container', 'no-margin-top')}>
                      <div className={cx('recommend')}>
-                        <div className={cx('productTest')}>
+                        {/* <div className={cx('productTest')}>
                            <ProductItem></ProductItem>
                         </div>
                         <div className={cx('productTest')}>
@@ -197,7 +361,7 @@ const Product = () => {
                         </div>
                         <div className={cx('productTest')}>
                            <ProductItem></ProductItem>
-                        </div>
+                        </div> */}
                      </div>
                   </div>
                </div>

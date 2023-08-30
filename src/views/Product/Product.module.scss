@@ -118,6 +118,7 @@
    .body-left {
       display: inline-block;
       max-width: var(--max-width-left);
+      width: var(--max-width-left);
    }
    .body-right {
       display: inline-block;
@@ -295,4 +296,14 @@
 
 .productTest {
    margin-bottom: 16px;
+}
+
+.wrapper-count {
+   display: flex;
+   align-items: flex-start;
+   line-height: 1.6rem;
+
+   & *:not(span) {
+      margin-left: 6px;
+   }
 }

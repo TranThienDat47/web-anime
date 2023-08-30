@@ -1,23 +1,37 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useContext } from 'react';
 
-import { apiUrl } from '~/config/constants';
 import styles from './Search.module.scss';
 import { ListProductSearch } from '~/components/ListProduct';
+import { ProductContext } from '~/contexts/product';
+import LazyLoading from '~/components/loading/LazyLoading';
 
 const cx = classNames.bind(styles);
 
 const Search = () => {
-   const [newResult, setNewResult] = useState(Array(12).fill(0));
+   const {
+      productState: {
+         searchResultProducts,
+         pageSearchResultProducts,
+         hasMore,
+         loadingMore,
+         keySearch,
+      },
+      beforeLoadSearchResult,
+      loadSearchResult,
+      loadKeySearch,
+   } = useContext(ProductContext);
+
+   const location = useLocation();
+   const params = new URLSearchParams(location.search);
+   const search_query = params.get('search_query');
 
    useEffect(() => {
-      const loadUser = async () => {
-         const response = await axios.get(`${apiUrl}/products`);
-         setNewResult(response.data.products);
-      };
-      loadUser();
-   }, []);
+      loadKeySearch(search_query);
+
+      if (keySearch.trim() !== '') beforeLoadSearchResult();
+   }, [keySearch, search_query]);
 
    return (
       <div className={cx('wrapper')}>
@@ -26,7 +40,15 @@ const Search = () => {
                <h3>Result</h3>
             </div>
             <div className={cx('result')}>
-               <ListProductSearch data={newResult} />
+               <LazyLoading
+                  hasMore={hasMore}
+                  loadingMore={loadingMore}
+                  pageCurrent={pageSearchResultProducts}
+                  beforeLoad={beforeLoadSearchResult}
+                  loadProductMore={loadSearchResult}
+               >
+                  <ListProductSearch data={searchResultProducts} />
+               </LazyLoading>
             </div>
          </div>
       </div>

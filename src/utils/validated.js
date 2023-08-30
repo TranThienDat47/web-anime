@@ -45,4 +45,64 @@ const validateTime = (time) => {
    };
 };
 
-export { validateTime };
+const converterDate = (dateString) => {
+   const date = new Date(dateString);
+
+   const day = date.getDate().toString().padStart(2, '0');
+   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+   const year = date.getFullYear().toString();
+
+   const formattedDate = `${day}-${month}-${year}`;
+
+   return formattedDate;
+};
+
+const formattedEpisodes = (data = []) => {
+   data = data.sort((a, b) => {
+      const episodeA = parseInt(a.episode);
+      const episodeB = parseInt(b.episode);
+
+      if (isNaN(episodeA) && isNaN(episodeB)) {
+         return 0;
+      }
+      if (isNaN(episodeA)) {
+         return -1;
+      }
+      if (isNaN(episodeB)) {
+         return 0;
+      }
+
+      return episodeB - episodeA;
+   });
+
+   const maxEpisodes = Math.max(
+      ...data.map((element) => parseInt(element.episode)).filter((element) => !isNaN(element)),
+   );
+
+   const lengthMax = String(maxEpisodes).length;
+
+   data = data.map((element) => {
+      if (!isNaN(parseInt(element.episode)))
+         if (String(element.episode).length < lengthMax) {
+            element.episode = element.episode.padStart(lengthMax, '0');
+         }
+
+      return element;
+   });
+
+   return data;
+};
+
+const converterDateTitle = (dateString) => {
+   const date = new Date(dateString);
+
+   const day = date.getDate().toString().padStart(2, '0');
+   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+   const year = date.getFullYear().toString();
+
+   const formattedDate = `${day} thg ${month}, ${year}`;
+
+   return formattedDate;
+};
+
+export { validateTime, converterDate, formattedEpisodes, converterDateTitle };

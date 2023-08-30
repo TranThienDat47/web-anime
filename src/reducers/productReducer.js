@@ -1,8 +1,12 @@
 export const initialState = {
    allProducts: [],
+   searchSuggestedProducts: [],
+   searchResultProducts: [],
    newProducts: [],
    suggestedProducts: [],
    pageSuggestedProducts: -1,
+   pageSearchResultProducts: -1,
+   keySearch: '',
    loading: false,
    loadingMore: false,
    error: null,
@@ -20,27 +24,59 @@ export const productReducer = (state, action) => {
          hasMore,
          loadingMore,
          pageSuggestedProducts,
+         searchSuggestedProducts,
+         searchResultProducts,
+         pageSearchResultProducts,
+         keySearch,
       },
    } = action;
 
    switch (type) {
-      case 'FETCH_PRODUCTS_REQUEST':
+      case 'FETCH_SEARCH_SUGGESTED_PRODUCTS_REQUEST':
          return {
             ...state,
             loading: true,
          };
-      case 'FETCH_PRODUCTS_SUCCESS':
+      case 'FETCH_SEARCH_SUGGESTED_PRODUCTS_SUCCESS':
          return {
             ...state,
             loading: false,
-            allProducts,
+            searchSuggestedProducts,
          };
-      case 'FETCH_PRODUCTS_FAILURE':
+      case 'FETCH_SEARCH_SUGGESTED_PRODUCTS_FAILURE':
          return {
             ...state,
             loading: false,
             error,
          };
+      case 'FETCH_KEY_SEARCH_PRODUCTS_REQUEST':
+         return {
+            ...state,
+            pageSearchResultProducts: -1,
+            searchResultProducts: [],
+            keySearch,
+         };
+      case 'FETCH_SEARCH_RESULT_PRODUCTS_REQUEST':
+         return {
+            ...state,
+            loadingMore: true,
+            hasMore: true,
+         };
+      case 'FETCH_SEARCH_RESULT_PRODUCTS_SUCCESS':
+         return {
+            ...state,
+            loadingMore: false,
+            searchResultProducts: [...state.searchResultProducts, ...searchResultProducts],
+            hasMore,
+            pageSearchResultProducts,
+         };
+      case 'FETCH_SEARCH_RESULT_PRODUCTS_FAILURE':
+         return {
+            ...state,
+            loadingMore: false,
+            error,
+         };
+
       case 'FETCH_NEW_PRODUCTS_SUCCESS':
          return {
             ...state,

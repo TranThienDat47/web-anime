@@ -157,7 +157,6 @@ function CommentItem({
    useEffect(() => {
       socket.on('comment_reply', (comment) => {
          setCommentReplies((prev) => [...prev, comment]);
-         setShowReplies(true);
       });
 
       return () => {

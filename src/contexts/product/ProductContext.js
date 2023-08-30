@@ -9,6 +9,10 @@ import {
    fetchSuggestedProductsFailure,
    fetchSuggestedProductsRequest,
    fetchSuggestedProductsSuccess,
+   fetchSearchResultProductsRequest,
+   fetchSearchResultProductsSuccess,
+   fetchSearchResultProductsFailure,
+   setKeySearchProduct,
 } from '../actionCreators/product';
 
 const ProductContext = createContext();
@@ -20,8 +24,59 @@ const LENGTH_PAGE = 12;
 const ProductContextProvider = ({ children }) => {
    const [productState, dispatch] = useReducer(productReducer, initialState);
 
+   const loadKeySearch = async (keySearch) => {
+      dispatch(setKeySearchProduct({ keySearch }));
+   };
+
+   const beforeLoadSearchResult = async () => {
+      dispatch(fetchSearchResultProductsRequest());
+   };
+
+   const loadSearchResult = async (page) => {
+      const response = await ProductServices.search({
+         skip: page * LENGTH_PAGE,
+         limit: LENGTH_PAGE,
+         key: productState.keySearch,
+      });
+      console.log(productState.keySearch);
+
+      if (response.success) {
+         console.log(response);
+         if (response.products.length >= 12) {
+            dispatch(
+               fetchSearchResultProductsSuccess({
+                  searchResultProducts: response.products,
+                  hasMore: true,
+                  pageSearchResultProducts: page,
+               }),
+            );
+         } else if (response.products.length > 0 && response.products.length < 12) {
+            dispatch(
+               fetchSearchResultProductsSuccess({
+                  searchResultProducts: response.products,
+                  hasMore: false,
+                  pageSearchResultProducts: page,
+               }),
+            );
+         } else if (response.products.length <= 0) {
+            dispatch(
+               fetchSearchResultProductsSuccess({
+                  searchResultProducts: response.products,
+                  hasMore: false,
+                  pageSearchResultProducts: page - 1,
+               }),
+            );
+         }
+      } else {
+         dispatch(fetchSearchResultProductsFailure({ error: null }));
+      }
+   };
+
    const loadHomeSuggested = async (page) => {
-      const response = await ProductServices.search(page * LENGTH_PAGE, LENGTH_PAGE);
+      const response = await ProductServices.search({
+         skip: page * LENGTH_PAGE,
+         limit: LENGTH_PAGE,
+      });
 
       if (response.success) {
          if (response.products.length >= 12) {
@@ -54,12 +109,16 @@ const ProductContextProvider = ({ children }) => {
       }
    };
 
-   const beforeLoadHomeSuggested = async (page) => {
+   const beforeLoadHomeSuggested = async () => {
       dispatch(fetchSuggestedProductsRequest());
    };
 
    const loadNewHome = async () => {
-      const response = await ProductServices.search(0, LENGTH_PAGE, true);
+      const response = await ProductServices.search({
+         skip: 0,
+         limit: LENGTH_PAGE,
+         recently: true,
+      });
 
       if (response.success) {
          dispatch(
@@ -71,10 +130,13 @@ const ProductContextProvider = ({ children }) => {
    };
 
    const productContextData = {
+      productState,
       loadNewHome,
       loadHomeSuggested,
       beforeLoadHomeSuggested,
-      productState,
+      loadSearchResult,
+      beforeLoadSearchResult,
+      loadKeySearch,
    };
 
    return <ProductContext.Provider value={productContextData}>{children}</ProductContext.Provider>;
