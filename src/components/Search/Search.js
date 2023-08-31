@@ -1,7 +1,7 @@
 import axios from 'axios';
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState, useContext } from 'react';
 
 import { useDebounce } from '~/hook';
 import styles from './Search.module.scss';
@@ -10,11 +10,17 @@ import { apiUrl } from '~/config/constants';
 import Headless from '~/components/Headless';
 import { MdOutlineClear } from 'react-icons/md';
 import { IoSearchOutline } from 'react-icons/io5';
+import { ProductContext } from '~/contexts/product';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 
 const cx = classNames.bind(styles);
 
 function Search() {
+   const {
+      productState: { tempSelectSearchResult },
+      loadTempSelectSearchResult,
+   } = useContext(ProductContext);
+
    const navigate = useNavigate();
 
    const [searchResult, setSearchResult] = useState([]);
@@ -66,11 +72,19 @@ function Search() {
 
    useEffect(() => {
       inputRef.current.onkeydown = (event) => {
-         if (event.key === 'Enter') {
-            btnSearchRef.current.click();
+         if (event.key === 'Enter' && searchValue.trim() !== '') {
+            if (!!!tempSelectSearchResult) {
+               btnSearchRef.current.click();
+               return;
+            }
+
+            navigate(`/product?id=${tempSelectSearchResult}`);
+            inputRef.current.blur();
+            setShowResult(false);
+            loadTempSelectSearchResult('');
          }
       };
-   }, []);
+   }, [searchValue, tempSelectSearchResult]);
 
    const handleMouseDown = (e) => {
       if (e.button === 0) {

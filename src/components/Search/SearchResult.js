@@ -1,7 +1,9 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState, useContext } from 'react';
 import { ProductItemSmall } from '~/components/ProductItem';
+import { ProductContext } from '~/contexts/product';
 
 function SearchResult({ result = [], ...passProp }) {
+   const { loadTempSelectSearchResult } = useContext(ProductContext);
    const [hover, setHover] = useState(-1);
    const resultRef = useRef();
    let tempRef = useRef('');
@@ -36,12 +38,14 @@ function SearchResult({ result = [], ...passProp }) {
                   if (prev + 1 > result.length - 1) {
                      resultRef.current.parentNode.parentNode.parentNode.parentNode.children[0].children[0].value =
                         document.getElementById(0).children[1].children[0].children[0].textContent;
+
                      return 0;
                   } else {
                      resultRef.current.parentNode.parentNode.parentNode.parentNode.children[0].children[0].value =
                         document.getElementById(
                            prev + 1,
                         ).children[1].children[0].children[0].textContent;
+
                      return prev + 1;
                   }
                });
@@ -67,6 +71,11 @@ function SearchResult({ result = [], ...passProp }) {
       },
       [result.length],
    );
+
+   useEffect(() => {
+      if (hover > -1)
+         loadTempSelectSearchResult(document.getElementById(hover).href.split('id=')[1]);
+   }, [hover]);
 
    useEffect(() => {
       // window.addEventListener('mouseover', handleMouseOver);

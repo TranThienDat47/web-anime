@@ -57,22 +57,24 @@ const HeaderSidebar = forwardRef((prop, ref) => {
    };
 
    const handleMouseUpNav = (e) => {
-      if (drag.current && moveNavRef.current && e.which === 1) {
+      if (drag.current) {
          drag.current = false;
-         const right = navRef.current.getBoundingClientRect().right;
-         if (right >= (widthRef.current * 1) / 2) {
-            navRef.current.style.left = 0 + 'px';
-            navRef.current.style.transition = '0.15s cubic-bezier(0.25, 0.55, 0, 0)';
-            moveNavRef.current = false;
+         if (moveNavRef.current && e.which === 1) {
+            const right = navRef.current.getBoundingClientRect().right;
+            if (right >= (widthRef.current * 1) / 2) {
+               navRef.current.style.left = 0 + 'px';
+               navRef.current.style.transition = '0.15s cubic-bezier(0.25, 0.55, 0, 0)';
+               moveNavRef.current = false;
 
-            setShowNav(true);
-         } else if (right < (widthRef.current * 1) / 2) {
-            navRef.current.style.transition = '0.2s cubic-bezier(0, 0, 0, 1)';
-            navRef.current.style.left = -240 + 'px';
-            moveNavRef.current = false;
+               setShowNav(true);
+            } else if (right < (widthRef.current * 1) / 2) {
+               navRef.current.style.transition = '0.2s cubic-bezier(0, 0, 0, 1)';
+               navRef.current.style.left = -240 + 'px';
+               moveNavRef.current = false;
 
-            if (showNav) setShowNav(false);
-            else {
+               // setShowNav(false);
+
+               setShowNav(false);
                handleHideNav();
             }
          }
@@ -102,6 +104,7 @@ const HeaderSidebar = forwardRef((prop, ref) => {
    };
 
    const handleHideNav = () => {
+      drag.current = false;
       pseudoRef.current.style.display = 'none';
       navRef.current.style.left = -240 + 'px';
    };

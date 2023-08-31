@@ -34,12 +34,10 @@ const Product = () => {
 
    useEffect(() => {
       setProductCurrent({ _id: parent_id });
-   }, []);
+   }, [parent_id]);
 
    useEffect(() => {
       if (productCurrent.product) {
-         console.log(productCurrent.product);
-
          let currentState = {};
 
          currentState._name = productCurrent.product._name;
@@ -60,7 +58,7 @@ const Product = () => {
 
          setProductCurrentState(currentState);
       }
-   }, [productCurrent]);
+   }, [productCurrent, parent_id]);
 
    useEffect(() => {
       wrapperRef.current.onscroll = () => {
@@ -179,7 +177,7 @@ const Product = () => {
                         <div className={cx('categories-list')}>
                            {productCurrentState.categories &&
                               productCurrentState.categories.map((element, index) => (
-                                 <Link to={'#'} key={element._id}>
+                                 <Link to={'#'} key={element._id ? element._id : index}>
                                     {element.title}
                                  </Link>
                               ))}
@@ -330,7 +328,7 @@ const Product = () => {
                      </div>
                   </div>
 
-                  <Comment ref={childRef} parent_id={parent_id}></Comment>
+                  <Comment key={parent_id} ref={childRef} parent_id={parent_id}></Comment>
                </div>
                <div className={cx('body-right')}>
                   <div className={cx('heading_of_block')}>

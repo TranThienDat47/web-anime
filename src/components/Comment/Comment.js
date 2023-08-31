@@ -40,6 +40,8 @@ const Comment = forwardRef(({ parent_id = null }, ref) => {
       setHasMore(true);
    };
 
+   useEffect(() => {}, [parent_id]);
+
    const loadCommentSuggested = async (page) => {
       const response = await CommentServices.fetchComments({
          parent_id,

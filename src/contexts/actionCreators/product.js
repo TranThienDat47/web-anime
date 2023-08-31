@@ -20,6 +20,11 @@ const fetchNewProductsSuccess = ({ newProducts }) => ({
    },
 });
 
+const setTeampSelectSearchResult = ({ tempSelectSearchResult }) => ({
+   type: 'SET_TEMP_SELECT_SEARCH_RESULT_REQUEST',
+   payload: { tempSelectSearchResult },
+});
+
 const setKeySearchProduct = ({ keySearch }) => ({
    type: 'FETCH_KEY_SEARCH_PRODUCTS_REQUEST',
    payload: { keySearch },
@@ -53,4 +58,5 @@ export {
    fetchSearchResultProductsSuccess,
    fetchSearchResultProductsFailure,
    setKeySearchProduct,
+   setTeampSelectSearchResult,
 };

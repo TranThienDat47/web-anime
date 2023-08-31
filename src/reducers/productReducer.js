@@ -11,6 +11,7 @@ export const initialState = {
    loadingMore: false,
    error: null,
    hasMore: false,
+   tempSelectSearchResult: '',
 };
 
 export const productReducer = (state, action) => {
@@ -28,10 +29,16 @@ export const productReducer = (state, action) => {
          searchResultProducts,
          pageSearchResultProducts,
          keySearch,
+         tempSelectSearchResult,
       },
    } = action;
 
    switch (type) {
+      case 'SET_TEMP_SELECT_SEARCH_RESULT_REQUEST':
+         return {
+            ...state,
+            tempSelectSearchResult,
+         };
       case 'FETCH_SEARCH_SUGGESTED_PRODUCTS_REQUEST':
          return {
             ...state,

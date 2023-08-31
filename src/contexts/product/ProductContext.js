@@ -13,6 +13,7 @@ import {
    fetchSearchResultProductsSuccess,
    fetchSearchResultProductsFailure,
    setKeySearchProduct,
+   setTeampSelectSearchResult,
 } from '../actionCreators/product';
 
 const ProductContext = createContext();
@@ -23,6 +24,10 @@ const LENGTH_PAGE = 12;
 
 const ProductContextProvider = ({ children }) => {
    const [productState, dispatch] = useReducer(productReducer, initialState);
+
+   const loadTempSelectSearchResult = async (tempSelectSearchResult) => {
+      dispatch(setTeampSelectSearchResult({ tempSelectSearchResult }));
+   };
 
    const loadKeySearch = async (keySearch) => {
       dispatch(setKeySearchProduct({ keySearch }));
@@ -137,6 +142,7 @@ const ProductContextProvider = ({ children }) => {
       loadSearchResult,
       beforeLoadSearchResult,
       loadKeySearch,
+      loadTempSelectSearchResult,
    };
 
    return <ProductContext.Provider value={productContextData}>{children}</ProductContext.Provider>;

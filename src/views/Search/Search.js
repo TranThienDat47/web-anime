@@ -37,7 +37,10 @@ const Search = () => {
       <div className={cx('wrapper')}>
          <div className={cx('inner')}>
             <div className={cx('header')}>
-               <h3>Result</h3>
+               <p className={cx('string-formatted')}>
+                  Kết quả tìm kiếm cho từ khóa: "
+                  <span className={cx('string-formatted strong')}>{search_query}</span>"
+               </p>
             </div>
             <div className={cx('result')}>
                <LazyLoading
