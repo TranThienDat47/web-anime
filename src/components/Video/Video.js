@@ -14,7 +14,7 @@ const videoSrc = null;
 
 const cx = classNames.bind(styles);
 
-const Watch = () => {
+const Watch = ({ width, height }) => {
    const watchRef = useRef();
    const wrapperVideoRef = useRef();
    const videoRef = useRef();
@@ -175,22 +175,24 @@ const Watch = () => {
    const handleAutoProgress = () => {
       const widthProgress = progressRefRef.current.getBoundingClientRect().width;
 
-      curIntervalRef.current = setInterval(() => {
-         let moveProgress = videoRef.current.currentTime / videoRef.current.duration;
+      setTimeout(() => {
+         curIntervalRef.current = setInterval(() => {
+            let moveProgress = videoRef.current.currentTime / videoRef.current.duration;
 
-         if (moveProgress > 1) {
-            moveProgress = 1;
-         } else if (moveProgress < 0) {
-            moveProgress = 0;
-         }
+            if (moveProgress > 1) {
+               moveProgress = 1;
+            } else if (moveProgress < 0) {
+               moveProgress = 0;
+            }
 
-         tempCurrentRef.current = videoRef.current.currentTime;
+            tempCurrentRef.current = videoRef.current.currentTime;
 
-         progressCurrent.current.style.transform = `scaleX(${moveProgress})`;
-         progressBall.current.style.transform = `translateX(calc(${
-            moveProgress * 100
-         }% - var(--size-ball-progress) / 2))`;
-      }, (videoRef.current.duration * 650) / widthProgress);
+            progressCurrent.current.style.transform = `scaleX(${moveProgress})`;
+            progressBall.current.style.transform = `translateX(calc(${
+               moveProgress * 100
+            }% - var(--size-ball-progress) / 2))`;
+         }, (videoRef.current.duration * 650) / widthProgress);
+      });
    };
 
    const handleMoveProgress = useCallback((e) => {
@@ -549,10 +551,10 @@ const Watch = () => {
 
    useEffect(() => {
       videoRef.current.ontimeupdate = () => {
-         if (videoRef.current.currentTime)
+         if (videoRef.current && videoRef.current.currentTime)
             timeCurrentRef.current.innerHTML = `${convertTime(videoRef.current.currentTime)}`;
 
-         if (!videoRef.current.paused) setPlay(1);
+         if (videoRef.current && !videoRef.current.paused) setPlay(1);
       };
 
       // const loadUser = async () => {
@@ -574,7 +576,7 @@ const Watch = () => {
       // }, 10000);
    }, []);
 
-   const handleScreen = () => {
+   const handleScreen = (e) => {
       if (screenStateRef.current === 0) {
          setScreenVideo(1);
          screenStateRef.current = 1;
@@ -602,10 +604,16 @@ const Watch = () => {
             window.top.document.msExitFullscreen();
          }
       }
+
+      screenRef.current.blur();
    };
 
    useEffect(() => {
-      screenRef.current.onclick = handleScreen;
+      screenRef.current.onclick = (e) => handleScreen(e);
+
+      // screenRef.current.onkeyup = (e) => {
+      //    e.preventDefault();
+      // };
    }, []);
 
    useEffect(() => {
@@ -699,6 +707,7 @@ const Watch = () => {
          }
 
          if (e.keyCode === 102) {
+            console.log(e.target, screenRef.current);
             handleScreen();
          }
       };
@@ -717,6 +726,8 @@ const Watch = () => {
       };
 
       videoRef.current.onplay = () => {
+         setPlay(1);
+
          handleAutoProgress();
          isEndedRef.current = false;
       };
@@ -845,7 +856,7 @@ const Watch = () => {
          handleMouseUpVolume();
          handleMousUpProgress();
 
-         if (watchRef.current.contains(e.target)) {
+         if (watchRef.current && watchRef.current.contains(e.target)) {
             focusVideoRef.current = true;
          } else focusVideoRef.current = false;
       };
@@ -946,7 +957,7 @@ const Watch = () => {
                      <button className={cx('btn_setting')}>
                         <AiFillSetting />
                      </button>
-                     <button ref={screenRef} className={cx('btn_full-screen')}>
+                     <button tabIndex="-1" ref={screenRef} className={cx('btn_full-screen')}>
                         {screenVideo === 0 ? <BiFullscreen /> : <BiExitFullscreen />}
                      </button>
                   </div>

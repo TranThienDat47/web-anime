@@ -14,13 +14,18 @@ import {
    fetchSearchResultProductsFailure,
    setKeySearchProduct,
    setTeampSelectSearchResult,
+   fetchRecommendProductsRequest,
+   fetchRecommendProductsSuccess,
+   fetchRecommendProductsFailure,
 } from '../actionCreators/product';
 
 const ProductContext = createContext();
 
 export { ProductContext };
 
-const LENGTH_PAGE = 12;
+const LENGTH_PAGE_SUGGESTED = 12;
+const LENGTH_PAGE_SEARCH = 9;
+const LENGTH_PAGE_RECOMMEND = 9;
 
 const ProductContextProvider = ({ children }) => {
    const [productState, dispatch] = useReducer(productReducer, initialState);
@@ -36,17 +41,18 @@ const ProductContextProvider = ({ children }) => {
    const beforeLoadSearchResult = async () => {
       dispatch(fetchSearchResultProductsRequest());
    };
+   const beforeLoadReCommendProduct = async () => {
+      dispatch(fetchRecommendProductsRequest());
+   };
 
    const loadSearchResult = async (page) => {
       const response = await ProductServices.search({
-         skip: page * LENGTH_PAGE,
-         limit: LENGTH_PAGE,
+         skip: page * LENGTH_PAGE_SEARCH,
+         limit: LENGTH_PAGE_SEARCH,
          key: productState.keySearch,
       });
-      console.log(productState.keySearch);
 
       if (response.success) {
-         console.log(response);
          if (response.products.length >= 12) {
             dispatch(
                fetchSearchResultProductsSuccess({
@@ -79,8 +85,8 @@ const ProductContextProvider = ({ children }) => {
 
    const loadHomeSuggested = async (page) => {
       const response = await ProductServices.search({
-         skip: page * LENGTH_PAGE,
-         limit: LENGTH_PAGE,
+         skip: page * LENGTH_PAGE_SUGGESTED,
+         limit: LENGTH_PAGE_SUGGESTED,
       });
 
       if (response.success) {
@@ -114,6 +120,43 @@ const ProductContextProvider = ({ children }) => {
       }
    };
 
+   const loadRecommendProduct = async (page) => {
+      const response = await ProductServices.search({
+         skip: page * LENGTH_PAGE_RECOMMEND,
+         limit: LENGTH_PAGE_RECOMMEND,
+      });
+
+      if (response.success) {
+         if (response.products.length >= 12) {
+            dispatch(
+               fetchRecommendProductsSuccess({
+                  recommendProducts: response.products,
+                  hasMore: true,
+                  pageRecommendProducts: page,
+               }),
+            );
+         } else if (response.products.length > 0 && response.products.length < 12) {
+            dispatch(
+               fetchRecommendProductsSuccess({
+                  recommendProducts: response.products,
+                  hasMore: false,
+                  pageRecommendProducts: page,
+               }),
+            );
+         } else if (response.products.length <= 0) {
+            dispatch(
+               fetchRecommendProductsSuccess({
+                  recommendProducts: response.products,
+                  hasMore: false,
+                  pageRecommendProducts: page - 1,
+               }),
+            );
+         }
+      } else {
+         dispatch(fetchRecommendProductsFailure({ error: null }));
+      }
+   };
+
    const beforeLoadHomeSuggested = async () => {
       dispatch(fetchSuggestedProductsRequest());
    };
@@ -121,7 +164,7 @@ const ProductContextProvider = ({ children }) => {
    const loadNewHome = async () => {
       const response = await ProductServices.search({
          skip: 0,
-         limit: LENGTH_PAGE,
+         limit: LENGTH_PAGE_SUGGESTED,
          recently: true,
       });
 
@@ -143,6 +186,8 @@ const ProductContextProvider = ({ children }) => {
       beforeLoadSearchResult,
       loadKeySearch,
       loadTempSelectSearchResult,
+      loadRecommendProduct,
+      beforeLoadReCommendProduct,
    };
 
    return <ProductContext.Provider value={productContextData}>{children}</ProductContext.Provider>;

@@ -1,34 +1,37 @@
 export const initialState = {
-   allProducts: [],
-   searchSuggestedProducts: [],
-   searchResultProducts: [],
    newProducts: [],
+   allProducts: [],
    suggestedProducts: [],
+   recommendProducts: [],
+   searchResultProducts: [],
+   searchSuggestedProducts: [],
    pageSuggestedProducts: -1,
+   pageRecommendProducts: -1,
    pageSearchResultProducts: -1,
    keySearch: '',
+   tempSelectSearchResult: '',
+   hasMore: false,
    loading: false,
    loadingMore: false,
    error: null,
-   hasMore: false,
-   tempSelectSearchResult: '',
 };
 
 export const productReducer = (state, action) => {
    const {
       type,
       payload: {
+         error,
+         hasMore,
+         keySearch,
          allProducts,
          newProducts,
          suggestedProducts,
-         error,
-         hasMore,
-         loadingMore,
-         pageSuggestedProducts,
-         searchSuggestedProducts,
+         recommendProducts,
          searchResultProducts,
+         searchSuggestedProducts,
          pageSearchResultProducts,
-         keySearch,
+         pageRecommendProducts,
+         pageSuggestedProducts,
          tempSelectSearchResult,
       },
    } = action;
@@ -104,7 +107,29 @@ export const productReducer = (state, action) => {
             hasMore,
             pageSuggestedProducts,
          };
+
       case 'FETCH_SUGGESTED_PRODUCTS_FAILURE':
+         return {
+            ...state,
+            loadingMore: false,
+            error,
+         };
+
+      case 'FETCH_RECOMMEND_PRODUCTS_REQUEST':
+         return {
+            ...state,
+            loadingMore: true,
+            hasMore: true,
+         };
+      case 'FETCH_RECOMMEND_PRODUCTS_SUCCESS':
+         return {
+            ...state,
+            loadingMore: false,
+            recommendProducts: [...state.recommendProducts, ...recommendProducts],
+            hasMore,
+            pageRecommendProducts,
+         };
+      case 'FETCH_RECOMMEND_PRODUCTS_FAILURE':
          return {
             ...state,
             loadingMore: false,

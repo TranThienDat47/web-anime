@@ -244,6 +244,8 @@ li {
 }
 
 img {
+   image-rendering: auto;
+
    &.avt {
       object-fit: cover;
       width: 40px;
@@ -328,4 +330,8 @@ img {
 
 .text-align-justify {
    text-align: justify;
+}
+
+.sperator {
+   border-top: 1px solid var(--border-color);
 }

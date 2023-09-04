@@ -49,6 +49,21 @@ const fetchSearchResultProductsFailure = ({ error }) => ({
    payload: { error },
 });
 
+const fetchRecommendProductsRequest = () => ({
+   type: 'FETCH_RECOMMEND_PRODUCTS_REQUEST',
+   payload: {},
+});
+
+const fetchRecommendProductsSuccess = ({ recommendProducts, hasMore, pageRecommendProducts }) => ({
+   type: 'FETCH_RECOMMEND_PRODUCTS_SUCCESS',
+   payload: { recommendProducts, hasMore, pageRecommendProducts },
+});
+
+const fetchRecommendProductsFailure = ({ error }) => ({
+   type: 'FETCH_RECOMMEND_PRODUCTS_FAILURE',
+   payload: { error },
+});
+
 export {
    fetchSuggestedProductsRequest,
    fetchSuggestedProductsSuccess,
@@ -59,4 +74,7 @@ export {
    fetchSearchResultProductsFailure,
    setKeySearchProduct,
    setTeampSelectSearchResult,
+   fetchRecommendProductsRequest,
+   fetchRecommendProductsSuccess,
+   fetchRecommendProductsFailure,
 };

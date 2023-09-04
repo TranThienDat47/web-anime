@@ -169,6 +169,10 @@
    overflow: hidden;
    -webkit-line-clamp: 2;
    text-overflow: ellipsis;
+
+   overflow: hidden;
+   -webkit-line-clamp: 2;
+   text-overflow: ellipsis;
    -webkit-box-orient: vertical;
    display: -webkit-box;
    height: 100%;
@@ -207,6 +211,8 @@
    font-weight: 500;
    color: rgba(22, 24, 35, 0.9);
    margin-bottom: 6px;
+
+   white-space: normal;
 
    overflow: hidden;
    -webkit-line-clamp: 5;

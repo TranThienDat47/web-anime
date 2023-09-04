@@ -12,6 +12,8 @@ import { GlobalContext } from '~/contexts/global';
 import imgs from '~/assets/img';
 
 import { converterDate, converterDateTitle, formattedEpisodes } from '~/utils/validated';
+import LazyLoading from '~/components/loading/LazyLoading';
+import { ProductContext } from '~/contexts/product';
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +22,12 @@ const Product = () => {
       globalState: { productCurrent, loading },
       setProductCurrent,
    } = useContext(GlobalContext);
+
+   const {
+      productState: { pageRecommendProducts, hasMore, loadingMore, recommendProducts },
+      beforeLoadReCommendProduct,
+      loadRecommendProduct,
+   } = useContext(ProductContext);
 
    const [productCurrentState, setProductCurrentState] = useState({});
 
@@ -334,8 +342,25 @@ const Product = () => {
                   <div className={cx('heading_of_block')}>
                      <h3 className={cx('title')}>Đề xuất</h3>
                   </div>
+                  <div className={cx('sperator')}></div>
                   <div className={cx('wrapper_of_block', 'container', 'no-margin-top')}>
                      <div className={cx('recommend')}>
+                        <LazyLoading
+                           ref={childRef}
+                           hasMore={hasMore}
+                           loadingMore={loadingMore}
+                           pageCurrent={pageRecommendProducts}
+                           beforeLoad={beforeLoadReCommendProduct}
+                           loadProductMore={loadRecommendProduct}
+                           loadingComponent={<></>}
+                        >
+                           {recommendProducts.map((element, index) => (
+                              <div key={index} className={cx('productTest')}>
+                                 <ProductItem key={index} data={element}></ProductItem>
+                              </div>
+                           ))}
+                        </LazyLoading>
+
                         {/* <div className={cx('productTest')}>
                            <ProductItem></ProductItem>
                         </div>
