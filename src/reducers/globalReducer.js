@@ -2,7 +2,7 @@ export const initialState = {
    productCurrent: {},
    theme: {},
    language: null,
-   loading: false,
+   loading: true,
    error: null,
 };
 

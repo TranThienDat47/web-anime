@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import Button from '~/components/Button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Comment } from '~/components/Comment';
 
 import classNames from 'classnames/bind';
@@ -10,23 +10,76 @@ import { GlobalContext } from '~/contexts/global';
 import Video from '~/components/Video/index';
 import imgs from '~/assets/img';
 import { converterDate, converterDateTitle, formattedEpisodes } from '~/utils/validated';
+import { ProductContext } from '~/contexts/product';
 import { ProductItem } from '~/components/ProductItem';
+import LazyLoading from '~/components/loading/LazyLoading';
 
 const cx = classNames.bind(styles);
 
-const Watch = ({ parent_id }) => {
+const Watch = () => {
    const {
       globalState: { productCurrent, loading },
       setProductCurrent,
    } = useContext(GlobalContext);
 
+   const {
+      productState: { pageRecommendProducts, hasMore, loadingMore, recommendProducts },
+      beforeLoadReCommendProduct,
+      loadRecommendProduct,
+   } = useContext(ProductContext);
+
+   const navigate = useNavigate();
+
+   const location = useLocation();
+   const params = new URLSearchParams(location.search);
+   const parent_id = params.get('parent_id');
+   const episodeCurrent = params.get('episodes');
+
    const [productCurrentState, setProductCurrentState] = useState({});
    const wrapperRef = useRef(null);
    const childRef = useRef(null);
+   const childRefRecommend = useRef(null);
+   const tempDetailRef = useRef({});
+
+   useEffect(() => {
+      setProductCurrent({ _id: parent_id });
+   }, [parent_id]);
+
+   useEffect(() => {
+      if (productCurrent.product) {
+         let currentState = {};
+
+         currentState._name = productCurrent.product._name;
+         currentState.anotherName = productCurrent.product.anotherName;
+         currentState.description = productCurrent.product.description;
+         currentState.img = productCurrent.product.img;
+         currentState.episodes = productCurrent.product.episodes;
+         currentState.currentEpisodes = productCurrent.product.currentEpisodes;
+         currentState.view = productCurrent.product.view;
+         currentState.releaseDate = converterDate(productCurrent.product.releaseDate);
+         currentState.news = productCurrent.product.news;
+         currentState.reacts = productCurrent.product.reacts;
+         currentState.categories = productCurrent.product.reacts;
+         currentState.background = productCurrent.product.background;
+         currentState.country_Of_Origin = productCurrent.product.country_Of_Origin;
+         currentState.createdAt = productCurrent.product.createdAt;
+         currentState.categories = productCurrent.product.categories;
+
+         setProductCurrentState(currentState);
+      }
+
+      if (
+         productCurrent.product &&
+         parseInt(tempDetailRef.current.episode) !== parseInt(episodeCurrent)
+      ) {
+         navigate(`/product?id=${parent_id}`);
+      }
+   }, [productCurrent, parent_id]);
 
    useEffect(() => {
       wrapperRef.current.onscroll = () => {
          childRef.current.handleScroll(wrapperRef.current);
+         childRefRecommend.current.handleScroll(wrapperRef.current);
       };
    }, []);
 
@@ -41,6 +94,15 @@ const Watch = ({ parent_id }) => {
             <div className={cx('page-body')}>
                <div className={cx('body-left')}>
                   <div>
+                     <div
+                        className={cx(
+                           'title-product',
+                           'string-formatted large strong',
+                           'content-empty w-100 h-20',
+                        )}
+                     >
+                        {loading ? '' : productCurrentState._name + ' - Tập ' + episodeCurrent}
+                     </div>
                      <div className={cx('wrapper_of_block', 'container', 'wrapper_detail')}>
                         <div className={cx('detail')}>
                            <div className={cx('inf__header')}>
@@ -158,15 +220,36 @@ const Watch = ({ parent_id }) => {
                         {productCurrent.product_details &&
                         productCurrent.product_details.length > 0 ? (
                            formattedEpisodes(productCurrent.product_details).map(
-                              (element, index) => (
-                                 <Link
-                                    to={'#'}
-                                    key={element.episode}
-                                    className={cx('item-episodes')}
-                                 >
-                                    {element.episode}
-                                 </Link>
-                              ),
+                              (element, index) => {
+                                 if (parseInt(element.episode) === parseInt(episodeCurrent)) {
+                                    tempDetailRef.current._id = element._id;
+                                    tempDetailRef.current.episode = element.episode;
+
+                                    return (
+                                       <Link
+                                          to={`/watch?parent_id=${parent_id}&episodes=${
+                                             parseInt(element.episode) || element.episode
+                                          }`}
+                                          key={element.episode}
+                                          className={cx('item-episodes', 'active')}
+                                       >
+                                          {element.episode}
+                                       </Link>
+                                    );
+                                 }
+
+                                 return (
+                                    <Link
+                                       to={`/watch?parent_id=${parent_id}&episodes=${
+                                          parseInt(element.episode) || element.episode
+                                       }`}
+                                       key={element.episode}
+                                       className={cx('item-episodes')}
+                                    >
+                                       {element.episode}
+                                    </Link>
+                                 );
+                              },
                            )
                         ) : (
                            <div>Hiện chưa có tập phim nào</div>
@@ -174,7 +257,11 @@ const Watch = ({ parent_id }) => {
                      </div>
                   </div>
 
-                  <Comment key={parent_id} ref={childRef} parent_id={parent_id}></Comment>
+                  <Comment
+                     key={tempDetailRef.current._id}
+                     ref={childRef}
+                     parent_id={tempDetailRef.current._id}
+                  ></Comment>
                </div>
                <div className={cx('body-right')}>
                   <div className={cx('heading_of_block')}>
@@ -183,30 +270,21 @@ const Watch = ({ parent_id }) => {
                   <div className={cx('sperator')}></div>
                   <div className={cx('wrapper_of_block', 'container', 'no-margin-top')}>
                      <div className={cx('recommend')}>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
-                        <div className={cx('productTest')}>
-                           <ProductItem></ProductItem>
-                        </div>
+                        <LazyLoading
+                           ref={childRefRecommend}
+                           hasMore={hasMore}
+                           loadingMore={loadingMore}
+                           pageCurrent={pageRecommendProducts}
+                           beforeLoad={beforeLoadReCommendProduct}
+                           loadProductMore={loadRecommendProduct}
+                           loadingComponent={<></>}
+                        >
+                           {recommendProducts.map((element, index) => (
+                              <div key={index} className={cx('productTest')}>
+                                 <ProductItem key={index} data={element}></ProductItem>
+                              </div>
+                           ))}
+                        </LazyLoading>
                      </div>
                   </div>
                </div>

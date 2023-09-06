@@ -123,7 +123,7 @@ function Search() {
    const handleRender = () => (
       <div className={cx('search-result')} tabIndex="-1">
          <PopperWrapper className={cx('search-item')}>
-            <h4 className={cx('search-title')}>Results</h4>
+            <h4 className={cx('search-title')}>Kết quả tìm kiếm</h4>
             <SearchResult
                result={searchResult}
                onMouseDown={handleMouseDown}

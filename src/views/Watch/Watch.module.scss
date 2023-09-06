@@ -12,7 +12,6 @@
    width: 100%;
    display: flex;
    flex-direction: column;
-
    max-width: 2276px;
    margin: auto;
    padding: 0 12px 0 16px;
@@ -142,6 +141,12 @@
       vertical-align: top;
       width: 100%;
       height: 100%;
+   }
+}
+
+.body-left {
+   .title-product {
+      margin-left: 19px;
    }
 }
 
@@ -287,6 +292,7 @@
    margin-right: -7px;
 
    .item-episodes {
+      border: 1.3px solid transparent;
       font-size: 1.4rem;
       font-weight: 550;
       line-height: 2rem;
@@ -306,6 +312,14 @@
       }
 
       margin-right: 6px;
+   }
+}
+
+.item-episodes {
+   &.active {
+      border-color: var(--border-color);
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16)),
+         var(--grey-btn-hover);
    }
 }
 

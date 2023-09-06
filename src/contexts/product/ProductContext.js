@@ -25,7 +25,7 @@ export { ProductContext };
 
 const LENGTH_PAGE_SUGGESTED = 12;
 const LENGTH_PAGE_SEARCH = 9;
-const LENGTH_PAGE_RECOMMEND = 9;
+const LENGTH_PAGE_RECOMMEND = 6;
 
 const ProductContextProvider = ({ children }) => {
    const [productState, dispatch] = useReducer(productReducer, initialState);
@@ -36,6 +36,10 @@ const ProductContextProvider = ({ children }) => {
 
    const loadKeySearch = async (keySearch) => {
       dispatch(setKeySearchProduct({ keySearch }));
+   };
+
+   const beforeLoadHomeSuggested = async () => {
+      dispatch(fetchSuggestedProductsRequest());
    };
 
    const beforeLoadSearchResult = async () => {
@@ -53,7 +57,7 @@ const ProductContextProvider = ({ children }) => {
       });
 
       if (response.success) {
-         if (response.products.length >= 12) {
+         if (response.products.length >= LENGTH_PAGE_SEARCH) {
             dispatch(
                fetchSearchResultProductsSuccess({
                   searchResultProducts: response.products,
@@ -61,7 +65,7 @@ const ProductContextProvider = ({ children }) => {
                   pageSearchResultProducts: page,
                }),
             );
-         } else if (response.products.length > 0 && response.products.length < 12) {
+         } else if (response.products.length > 0 && response.products.length < LENGTH_PAGE_SEARCH) {
             dispatch(
                fetchSearchResultProductsSuccess({
                   searchResultProducts: response.products,
@@ -90,7 +94,7 @@ const ProductContextProvider = ({ children }) => {
       });
 
       if (response.success) {
-         if (response.products.length >= 12) {
+         if (response.products.length >= LENGTH_PAGE_SUGGESTED) {
             dispatch(
                fetchSuggestedProductsSuccess({
                   suggestedProducts: response.products,
@@ -98,7 +102,10 @@ const ProductContextProvider = ({ children }) => {
                   pageSuggestedProducts: page,
                }),
             );
-         } else if (response.products.length > 0 && response.products.length < 12) {
+         } else if (
+            response.products.length > 0 &&
+            response.products.length < LENGTH_PAGE_SUGGESTED
+         ) {
             dispatch(
                fetchSuggestedProductsSuccess({
                   suggestedProducts: response.products,
@@ -127,7 +134,7 @@ const ProductContextProvider = ({ children }) => {
       });
 
       if (response.success) {
-         if (response.products.length >= 12) {
+         if (response.products.length >= LENGTH_PAGE_RECOMMEND) {
             dispatch(
                fetchRecommendProductsSuccess({
                   recommendProducts: response.products,
@@ -135,7 +142,10 @@ const ProductContextProvider = ({ children }) => {
                   pageRecommendProducts: page,
                }),
             );
-         } else if (response.products.length > 0 && response.products.length < 12) {
+         } else if (
+            response.products.length > 0 &&
+            response.products.length < LENGTH_PAGE_RECOMMEND
+         ) {
             dispatch(
                fetchRecommendProductsSuccess({
                   recommendProducts: response.products,
@@ -155,10 +165,6 @@ const ProductContextProvider = ({ children }) => {
       } else {
          dispatch(fetchRecommendProductsFailure({ error: null }));
       }
-   };
-
-   const beforeLoadHomeSuggested = async () => {
-      dispatch(fetchSuggestedProductsRequest());
    };
 
    const loadNewHome = async () => {

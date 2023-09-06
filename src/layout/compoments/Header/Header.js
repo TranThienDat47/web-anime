@@ -35,28 +35,7 @@ function Header() {
    } = useContext(AuthContext);
 
    const [showNotification, setShowNotification] = useState(false);
-
-   const dataInit = [
-      {
-         title: (
-            <div className={cx('title')}>
-               <p className={cx('account-name')}>Trần Văn Nam</p>
-               <p className={cx('account-email')}>tranthiendat220102@gmail.com</p>
-            </div>
-         ),
-         left_icon: (
-            <img
-               className={cx('avt', 'account-avt')}
-               src="https://hhtq.vip/wp-content/uploads/2021/09/thieu-nien-ca-hanh-phan-2-1-1.jpg"
-               alt=""
-            />
-         ),
-      },
-      {
-         title: <div className={cx('title')}>Tài khoản của bạn</div>,
-         left_icon: <BiUserCircle className={cx('icon')} />,
-         separate: true,
-      },
+   const [dataInit, setDataInit] = useState([
       {
          title: <div className={cx('title')}>Cài đặt</div>,
          left_icon: <RiSettingsLine className={cx('icon')} />,
@@ -96,12 +75,6 @@ function Header() {
          },
       },
       {
-         to: '/logout',
-         title: <div className={cx('title')}>Đăng xuất</div>,
-         left_icon: <AiOutlineLogout className={cx('icon')} />,
-         separate: true,
-      },
-      {
          title: <div className={cx('title')}>Trợ giúp</div>,
          left_icon: <AiOutlineQuestionCircle className={cx('icon')} />,
          separate: true,
@@ -110,11 +83,175 @@ function Header() {
          title: <div className={cx('title')}>Đóng góp ý kiến</div>,
          left_icon: <AiOutlineExclamationCircle className={cx('icon')} />,
       },
-   ];
+   ]);
+
+   // const dataInitRef = useRef([
+   //       {
+   //          title: (
+   //             <div className={cx('title')}>
+   //                <p className={cx('account-name')}>Trần Văn Nam</p>
+   //                <p className={cx('account-email')}>tranthiendat220102@gmail.com</p>
+   //             </div>
+   //          ),
+   //          left_icon: (
+   //             <img
+   //                className={cx('avt', 'account-avt')}
+   //                src={imgs.noImage}
+   //                onError={(e) => {
+   //                   e.target.onerror = null;
+   //                   e.target.src = imgs.noImage;
+   //                }}
+   //                alt=""
+   //             />
+   //          ),
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Tài khoản của bạn</div>,
+   //          left_icon: <BiUserCircle className={cx('icon')} />,
+   //          separate: true,
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Cài đặt</div>,
+   //          left_icon: <RiSettingsLine className={cx('icon')} />,
+   //          right_icon: <AiOutlineRight className={cx('icon')} />,
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Giao diện: Giao diện sáng</div>,
+   //          left_icon: <AiOutlineThunderbolt className={cx('icon')} />,
+   //          right_icon: <AiOutlineRight className={cx('icon')} />,
+   //          children: {
+   //             title: <div className={cx('title')}>Giao diện</div>,
+   //             data: [
+   //                {
+   //                   title: <div className={cx('title')}>Giao diện sáng</div>,
+   //                   left_icon: <AiOutlineCheck className={cx('icon')} />,
+   //                },
+   //                {
+   //                   title: <div className={cx('title')}>Giao diện tối</div>,
+   //                   left_icon: <div className={cx('icon')}></div>,
+   //                },
+   //             ],
+   //          },
+   //          separate: true,
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Ngôn ngữ: Tiếng Việt (VN)</div>,
+   //          left_icon: <IoLanguageOutline className={cx('icon')} />,
+   //          right_icon: <AiOutlineRight className={cx('icon')} />,
+   //          children: {
+   //             title: <div className={cx('title')}>Ngôn ngữ</div>,
+   //             data: [
+   //                {
+   //                   title: <div className={cx('title')}>Tiếng Việt (VN)</div>,
+   //                   left_icon: <AiOutlineCheck className={cx('icon')} />,
+   //                },
+   //             ],
+   //          },
+   //       },
+   //       {
+   //          to: '/logout',
+   //          title: <div className={cx('title')}>Đăng xuất</div>,
+   //          left_icon: <AiOutlineLogout className={cx('icon')} />,
+   //          separate: true,
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Trợ giúp</div>,
+   //          left_icon: <AiOutlineQuestionCircle className={cx('icon')} />,
+   //          separate: true,
+   //       },
+   //       {
+   //          title: <div className={cx('title')}>Đóng góp ý kiến</div>,
+   //          left_icon: <AiOutlineExclamationCircle className={cx('icon')} />,
+   //       },
+   //   ]);
 
    const notificationResultRef = useRef();
 
    const childRef = useRef(null);
+
+   useEffect(() => {
+      if (user) {
+         setDataInit([
+            {
+               title: (
+                  <div className={cx('title')}>
+                     <p className={cx('account-name')}>{user._name}</p>
+                     <p className={cx('account-email')}>{user.username}</p>
+                  </div>
+               ),
+               left_icon: (
+                  <img
+                     className={cx('avt', 'account-avt')}
+                     src={user.img || imgs.noImage}
+                     onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = imgs.noImage;
+                     }}
+                     alt=""
+                  />
+               ),
+            },
+            {
+               title: <div className={cx('title')}>Tài khoản của bạn</div>,
+               left_icon: <BiUserCircle className={cx('icon')} />,
+               separate: true,
+            },
+            {
+               title: <div className={cx('title')}>Cài đặt</div>,
+               left_icon: <RiSettingsLine className={cx('icon')} />,
+               right_icon: <AiOutlineRight className={cx('icon')} />,
+            },
+            {
+               title: <div className={cx('title')}>Giao diện: Giao diện sáng</div>,
+               left_icon: <AiOutlineThunderbolt className={cx('icon')} />,
+               right_icon: <AiOutlineRight className={cx('icon')} />,
+               children: {
+                  title: <div className={cx('title')}>Giao diện</div>,
+                  data: [
+                     {
+                        title: <div className={cx('title')}>Giao diện sáng</div>,
+                        left_icon: <AiOutlineCheck className={cx('icon')} />,
+                     },
+                     {
+                        title: <div className={cx('title')}>Giao diện tối</div>,
+                        left_icon: <div className={cx('icon')}></div>,
+                     },
+                  ],
+               },
+               separate: true,
+            },
+            {
+               title: <div className={cx('title')}>Ngôn ngữ: Tiếng Việt (VN)</div>,
+               left_icon: <IoLanguageOutline className={cx('icon')} />,
+               right_icon: <AiOutlineRight className={cx('icon')} />,
+               children: {
+                  title: <div className={cx('title')}>Ngôn ngữ</div>,
+                  data: [
+                     {
+                        title: <div className={cx('title')}>Tiếng Việt (VN)</div>,
+                        left_icon: <AiOutlineCheck className={cx('icon')} />,
+                     },
+                  ],
+               },
+            },
+            {
+               to: '/logout',
+               title: <div className={cx('title')}>Đăng xuất</div>,
+               left_icon: <AiOutlineLogout className={cx('icon')} />,
+               separate: true,
+            },
+            {
+               title: <div className={cx('title')}>Trợ giúp</div>,
+               left_icon: <AiOutlineQuestionCircle className={cx('icon')} />,
+               separate: true,
+            },
+            {
+               title: <div className={cx('title')}>Đóng góp ý kiến</div>,
+               left_icon: <AiOutlineExclamationCircle className={cx('icon')} />,
+            },
+         ]);
+      }
+   }, [user]);
 
    useEffect(() => {
       const handleClickOutside = (e) => {
@@ -143,9 +280,9 @@ function Header() {
                      childRef.current.showAndHide();
                   }}
                />
-               <Link to={config.routes.home} className={cx('logo-link')}>
+               <a href={config.routes.home} className={cx('logo-link')}>
                   <img src={imgs.logo} alt="Blog" />
-               </Link>
+               </a>
             </div>
 
             <div className={cx('search')}>
@@ -184,14 +321,32 @@ function Header() {
                   )}
                </div>
                <div className={cx('infor-icon')}>
-                  {isAuthenticated ? (
-                     <Menu items={dataInit} hideOnClick={true} className={cx('wrapper-account')}>
+                  {isAuthenticated && user ? (
+                     <Menu
+                        items={dataInit}
+                        key={dataInit}
+                        hideOnClick={true}
+                        className={cx('wrapper-account')}
+                     >
                         <button className={cx('user')}>
-                           <img src={imgs.noImage} alt="Logo" className={cx('avt')} />
+                           <img
+                              src={user.img || imgs.noImage}
+                              onError={(e) => {
+                                 e.target.onerror = null;
+                                 e.target.src = imgs.noImage;
+                              }}
+                              alt="Logo"
+                              className={cx('avt')}
+                           />
                         </button>
                      </Menu>
                   ) : (
-                     <Menu items={dataInit} hideOnClick={true} className={cx('wrapper-account')}>
+                     <Menu
+                        items={dataInit}
+                        key={dataInit}
+                        hideOnClick={true}
+                        className={cx('wrapper-account')}
+                     >
                         <Button
                            className={cx('header__icon', 'option', 'menu', 'tooltip')}
                            transparent
